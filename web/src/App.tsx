@@ -1,3 +1,5 @@
+import "./index.css";
+
 import type { Component } from "solid-js";
 
 const App: Component = () => {
