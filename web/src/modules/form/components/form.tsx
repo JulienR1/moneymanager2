@@ -2,7 +2,9 @@ import {
   Accessor,
   JSX,
   createContext,
+  createEffect,
   createSignal,
+  splitProps,
   useContext,
 } from "solid-js";
 import { BaseSchema, Output, SafeParseResult, safeParse } from "valibot";
@@ -30,14 +32,17 @@ const FormContext = createContext<IFormContext>({
 export const useForm = () => useContext(FormContext);
 
 const Form = <S extends BaseSchema>(props: Props<S>) => {
+  const [local, others] = splitProps(props, ["schema"]);
   let formRef: HTMLFormElement;
 
   const [isDirty, setIsDirty] = createSignal(false);
   const [issues, setIssues] = createSignal<Record<string, string[]>>({});
 
+  createEffect(() => validateForm());
+
   function validateForm(): SafeParseResult<S> {
     const formData = getFormData(formRef);
-    const validationResult = safeParse(props.schema, formData);
+    const validationResult = safeParse(local.schema, formData);
 
     const currentIssues: ReturnType<typeof issues> = {};
     if (!validationResult.success) {
@@ -58,7 +63,7 @@ const Form = <S extends BaseSchema>(props: Props<S>) => {
 
     const validationResult = validateForm();
     if (validationResult.success) {
-      props.onSubmit(validationResult.output);
+      others.onSubmit(validationResult.output);
     }
   }
 
@@ -66,8 +71,8 @@ const Form = <S extends BaseSchema>(props: Props<S>) => {
 
   return (
     <FormContext.Provider value={{ issues: parsedIssues, validateForm }}>
-      <form {...props} ref={(el) => (formRef = el)} onSubmit={handleSubmit}>
-        {props.children}
+      <form {...others} ref={(el) => (formRef = el)} onSubmit={handleSubmit}>
+        {others.children}
         <FieldError name="unknown" />
       </form>
     </FormContext.Provider>
