@@ -1,3 +1,4 @@
+const plugin = require("tailwindcss/plugin");
 const defaultColors = require("tailwindcss/colors");
 
 /** @type {import('tailwindcss').Config} */
@@ -21,9 +22,18 @@ module.exports = {
     },
     colors: {
       primary: "#7966ff",
+      "primary-dark": "#614dff",
       secondary: "#9666ff",
       ...defaultColors,
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(function ({ addVariant }) {
+      addVariant("hocus", ["&:hover", "&:focus"]);
+      addVariant("group-hocus", [
+        ":merge(.group):hover &",
+        ":merge(.group):focus &",
+      ]);
+    }),
+  ],
 };

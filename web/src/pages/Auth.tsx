@@ -60,7 +60,7 @@ const Auth = () => {
         </Switch>
       </div>
 
-      <div class="absolute bottom-4 left-1/2 flex w-full -translate-x-1/2 justify-center text-sm md:relative md:bottom-0 md:mt-4">
+      <div class="mt-4 flex w-full justify-center text-center text-sm">
         <p class="pr-1 text-gray-500">{otherOption[authMode()].question}</p>
         <A
           href={otherOption[authMode()].link}
