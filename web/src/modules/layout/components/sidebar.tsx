@@ -65,7 +65,7 @@ const SidebarLink: Component<{
           classList={{
             "pl-2 transition-all duration-300": true,
             "max-w-[288px] opacity-100 visible": !props.compact,
-            "pl-0 max-w-0 opacity-0 invisible": props.compact,
+            "md:pl-0 max-w-0 opacity-0 invisible": props.compact,
           }}
         >
           {props.label}
