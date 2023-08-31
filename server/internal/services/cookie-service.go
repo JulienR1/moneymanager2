@@ -20,6 +20,7 @@ func (service *CookieService) MakeRefreshTokenCookie(token string) *fiber.Cookie
 		Value:    token,
 		Expires:  time.Now().Add(24 * 14 * time.Hour),
 		HTTPOnly: true,
+		Secure:   true,
 	}
 }
 
@@ -28,5 +29,6 @@ func (service *CookieService) MakeRefreshTokenClearingCookie() *fiber.Cookie {
 		Name:     REFRESH_TOKEN,
 		Expires:  time.Now().Add(-(2 * time.Hour)),
 		HTTPOnly: true,
+		Secure:   true,
 	}
 }

@@ -4,6 +4,7 @@ import {
   email,
   equal,
   minLength,
+  number,
   object,
   regex,
   string,
@@ -48,5 +49,15 @@ export const makeRegisterSchema = (currentPassword: string) =>
     ]),
   });
 
+export const AccessTokenSchema = object({ accessToken: string() });
+
+export const UserSchema = object({
+  id: number(),
+  firstname: string(),
+  lastname: string(),
+  username: string(),
+});
+
 export type LogInSchema = Output<typeof LogInSchema>;
 export type RegisterSchema = Output<ReturnType<typeof makeRegisterSchema>>;
+export type UserSchema = Output<typeof UserSchema>;

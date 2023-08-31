@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	jsonutils "JulienR1/moneymanager2/server/internal/pkg/json-utils"
 	"JulienR1/moneymanager2/server/internal/services"
 	"net/http"
 
@@ -43,12 +44,12 @@ func (handler *AuthHandler) Login(c *fiber.Ctx) error {
 	}
 
 	if err := handler.validate.Struct(input); err != nil {
-		return c.Status(http.StatusBadRequest).SendString(err.Error())
+		return c.Status(http.StatusBadRequest).JSON(jsonutils.NewError(err))
 	}
 
 	accessToken, err := handler.service.Login(input.Username, input.Password)
 	if err != nil {
-		return c.Status(http.StatusUnauthorized).SendString(err.Error())
+		return c.Status(http.StatusUnauthorized).JSON(jsonutils.NewError(err))
 	}
 
 	refreshToken, err := handler.tokenService.GenerateRefreshToken()

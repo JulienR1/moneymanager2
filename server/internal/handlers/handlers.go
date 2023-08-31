@@ -14,7 +14,7 @@ func RegisterRoutes(app *fiber.App) {
 
 	userRepository := repositories.UserRepository{}
 
-	userService := services.MakeUserService()
+	userService := services.MakeUserService(&userRepository)
 	tokenService := services.MakeTokenService()
 	cookieService := services.MakeCookieService()
 	authService := services.MakeAuthService(&tokenService, &userRepository)
@@ -33,6 +33,7 @@ func RegisterRoutes(app *fiber.App) {
 
 	users := app.Group("/users").Use(authMiddleware)
 	users.Post("/register", userHandler.Register)
+	users.Get("/:userId", userHandler.GetUser)
 }
 
 func rootController(c *fiber.Ctx) error {

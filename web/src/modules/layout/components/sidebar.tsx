@@ -1,13 +1,20 @@
 import Icon, { IconProps } from "@modules/form/components/icon";
-import { A } from "@solidjs/router";
-import { Component, Index, JSX, Show, createSignal } from "solid-js";
 import Backdrop from "./backdrop";
 
-type SidebarProps = { visible: boolean; onClose: () => void };
+import { A } from "@solidjs/router";
+import { Component, For, Index, JSX, Show, createSignal } from "solid-js";
+
+export type SidebarLinkProps = { href: string; label: string; icon: IconProps };
+
+type SidebarProps = {
+  visible: boolean;
+  onClose: () => void;
+  links: SidebarLinkProps[];
+};
 
 const CloseButton: Component<Pick<SidebarProps, "onClose">> = (props) => {
   return (
-    <div class="absolute right-0 translate-x-full">
+    <div class="absolute right-0 translate-x-full md:hidden">
       <Icon
         name="close"
         class="p-3 text-3xl font-semibold text-white"
@@ -38,13 +45,12 @@ const LinkGroup: Component<{
   );
 };
 
-const SidebarLink: Component<{
-  href: string;
-  icon: IconProps;
-  label: string;
-  onClick: Function;
-  compact: boolean;
-}> = (props) => {
+const SidebarLink: Component<
+  {
+    onClick: Function;
+    compact: boolean;
+  } & SidebarLinkProps
+> = (props) => {
   return (
     <A
       href={props.href}
@@ -134,20 +140,15 @@ const Sidebar: Component<SidebarProps> = (props) => {
             </div>
 
             <LinkGroup>
-              <SidebarLink
-                href="/login"
-                icon={{ name: "login" }}
-                label="Connexion"
-                onClick={props.onClose}
-                compact={compact()}
-              />
-              <SidebarLink
-                href="/register"
-                icon={{ name: "person" }}
-                label="S'enregistrer"
-                onClick={props.onClose}
-                compact={compact()}
-              />
+              <For each={props.links}>
+                {(link) => (
+                  <SidebarLink
+                    onClick={props.onClose}
+                    compact={compact()}
+                    {...link}
+                  />
+                )}
+              </For>
             </LinkGroup>
           </div>
 
