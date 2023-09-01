@@ -13,7 +13,7 @@ const Profile: Component<ProfileProps> = (props) => {
   }
 
   return (
-    <div class="block aspect-square h-full w-[30px]">
+    <div class="block aspect-square h-full w-[35px]">
       <Suspense fallback={<Skeleton type="round" />}>
         <Show when={props.user()}>
           <figure class="border-full flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-primary">
