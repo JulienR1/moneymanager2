@@ -77,7 +77,7 @@ export function getUserIdFromToken() {
 export async function fetchAuthenticatedUser(
   userId: number,
 ): Promise<UserSchema | null> {
-  if (userId === null) {
+  if (userId < 0) {
     return null;
   }
 

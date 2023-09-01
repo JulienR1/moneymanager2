@@ -29,10 +29,12 @@ func (service *UserService) RegisterUser(firstname, lastname, username, password
 
 func (service *UserService) FindUserById(id int) dtos.UserDto {
 	record := service.userRepository.FindUserById(id)
+
 	return dtos.UserDto{
-		Id:        record.Id,
-		Firstname: record.Firstname,
-		Lastname:  record.Lastname,
-		Username:  record.Username,
+		Id:         record.Id,
+		Firstname:  record.Firstname,
+		Lastname:   record.Lastname,
+		Username:   record.Username,
+		PictureUrl: nil,
 	}
 }

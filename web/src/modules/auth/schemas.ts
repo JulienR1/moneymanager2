@@ -4,6 +4,7 @@ import {
   email,
   equal,
   minLength,
+  nullable,
   number,
   object,
   regex,
@@ -56,6 +57,7 @@ export const UserSchema = object({
   firstname: string(),
   lastname: string(),
   username: string(),
+  pictureUrl: nullable(string()),
 });
 
 export type LogInSchema = Output<typeof LogInSchema>;
