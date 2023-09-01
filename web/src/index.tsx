@@ -5,6 +5,7 @@ import { parse } from "valibot";
 import { EnvSchema } from "./env";
 
 import AuthProvider from "@modules/auth/components/auth-provider";
+import ToastProvider from "@modules/toasts/toast-provider";
 import App from "./App";
 
 parse(EnvSchema, import.meta.env);
@@ -16,6 +17,7 @@ render(
       <Router>
         <App />
       </Router>
+      <ToastProvider />
     </AuthProvider>
   ),
   root!,
