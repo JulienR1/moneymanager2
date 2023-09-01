@@ -1,9 +1,9 @@
 import "./index.css";
 
-import { Route, Routes } from "@solidjs/router";
-import { Accessor, Show, type Component } from "solid-js";
+import { Navigate, Route, Routes } from "@solidjs/router";
+import { Accessor, Match, Switch, type Component } from "solid-js";
 
-import { auth } from "@modules/auth/store";
+import { useAuth } from "@modules/auth/components/auth-provider";
 import Layout from "@modules/layout/layout";
 
 import Auth from "./pages/Auth";
@@ -12,11 +12,11 @@ import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 
 const App: Component = () => {
-  const connected = () => auth().authenticated;
+  const auth = useAuth();
 
   return (
-    <Layout connected={connected}>
-      <Navigation connected={connected} />
+    <Layout connected={auth.connected}>
+      <Navigation connected={auth.connected} />
     </Layout>
   );
 };
@@ -25,14 +25,21 @@ const Navigation: Component<{ connected: Accessor<boolean> }> = (props) => {
   return (
     <Routes>
       <Route path="/">
-        <Show
-          when={props.connected()}
-          fallback={<Route path="/" component={Home}></Route>}
-        >
-          <Route path="/" component={Dashboard}></Route>
-        </Show>
+        <Switch>
+          <Match when={!props.connected()}>
+            <Route path="/" component={Home} />
+            <Route path={["register", "login"]} component={Auth} />
+          </Match>
+
+          <Match when={props.connected()}>
+            <Route path="/" component={Dashboard} />
+            <Route path={["register", "login"]}>
+              <Navigate href="/" />
+            </Route>
+          </Match>
+        </Switch>
       </Route>
-      <Route path={["register", "login"]} component={Auth} />
+
       <Route path="*" component={NotFound} />
     </Routes>
   );

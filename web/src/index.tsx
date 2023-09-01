@@ -1,23 +1,22 @@
 /* @refresh reload */
 import { Router } from "@solidjs/router";
-import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 import { render } from "solid-js/web";
 import { parse } from "valibot";
 import { EnvSchema } from "./env";
 
+import AuthProvider from "@modules/auth/components/auth-provider";
 import App from "./App";
 
 parse(EnvSchema, import.meta.env);
-const queryClient = new QueryClient();
 
 const root = document.getElementById("root");
 render(
   () => (
-    <QueryClientProvider client={queryClient}>
+    <AuthProvider>
       <Router>
         <App />
       </Router>
-    </QueryClientProvider>
+    </AuthProvider>
   ),
   root!,
 );
