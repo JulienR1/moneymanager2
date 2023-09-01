@@ -17,10 +17,9 @@ func main() {
 
 	app := fiber.New()
 	app.Use(cors.New(cors.Config{
-		AllowOriginsFunc: func(origin string) bool {
-			return os.Getenv("MODE") == "DEV"
-		},
-		AllowCredentials: true}))
+		AllowOrigins:     os.Getenv("ALLOWED_ORIGINS"),
+		AllowCredentials: true,
+	}))
 	handlers.RegisterRoutes(app)
 	log.Fatal(app.Listen(":" + os.Getenv("PORT")))
 }

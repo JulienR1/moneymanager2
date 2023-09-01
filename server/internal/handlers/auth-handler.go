@@ -62,7 +62,7 @@ func (handler *AuthHandler) Login(c *fiber.Ctx) error {
 }
 
 func (handler *AuthHandler) RefreshAccessToken(c *fiber.Ctx) error {
-	refreshToken := c.Cookies("refresh_token")
+	refreshToken := c.Cookies(services.REFRESH_TOKEN)
 	if refreshToken == "" {
 		return c.SendStatus(http.StatusUnauthorized)
 	}
