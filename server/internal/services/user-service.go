@@ -23,18 +23,27 @@ func (service *UserService) RegisterUser(firstname, lastname, username, password
 		return err
 	}
 
-	fmt.Println(hashedPassword)
+	fmt.Println(string(hashedPassword))
 	return nil
 }
 
-func (service *UserService) FindUserById(id int) dtos.UserDto {
-	record := service.userRepository.FindUserById(id)
+func (service *UserService) FindUserById(id int) (*dtos.UserDto, error) {
+	record, err := service.userRepository.FindUserById(id)
+	if err != nil {
+		return nil, err
+	}
 
-	return dtos.UserDto{
+	dto := dtos.UserDto{
 		Id:         record.Id,
 		Firstname:  record.Firstname,
 		Lastname:   record.Lastname,
 		Username:   record.Username,
 		PictureUrl: nil,
 	}
+
+	if record.PictureUrl.Valid {
+		dto.PictureUrl = &record.PictureUrl.String
+	}
+
+	return &dto, nil
 }

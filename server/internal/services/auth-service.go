@@ -18,7 +18,11 @@ func MakeAuthService(t *TokenService, u *repositories.UserRepository) AuthServic
 }
 
 func (service *AuthService) Login(username, password string) (string, error) {
-	user := service.userRepository.FindUserByEmail(username)
+	user, err := service.userRepository.FindUserByEmail(username)
+	if err != nil {
+		return "", errors.New("could not find the user associated with '" + username + "'")
+	}
+
 	if err := bcrypt.CompareHashAndPassword(user.Password, []byte(password)); err != nil {
 		return "", errors.New("invalid password")
 	}

@@ -3,16 +3,17 @@ package handlers
 import (
 	"JulienR1/moneymanager2/server/internal/repositories"
 	"JulienR1/moneymanager2/server/internal/services"
+	"database/sql"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/keyauth"
 )
 
-func RegisterRoutes(app *fiber.App) {
+func RegisterRoutes(app *fiber.App, db *sql.DB) {
 	validator := validator.New()
 
-	userRepository := repositories.UserRepository{}
+	userRepository := repositories.MakeUserRepository(db)
 
 	userService := services.MakeUserService(&userRepository)
 	tokenService := services.MakeTokenService()
@@ -31,8 +32,8 @@ func RegisterRoutes(app *fiber.App) {
 	auth.Post("/logout", authHandler.Logout)
 	auth.Use(authMiddleware).Post("/refresh", authHandler.RefreshAccessToken)
 
+	app.Post("/register", userHandler.Register)
 	users := app.Group("/users").Use(authMiddleware)
-	users.Post("/register", userHandler.Register)
 	users.Get("/:userId", userHandler.GetUser)
 }
 

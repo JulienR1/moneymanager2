@@ -44,6 +44,10 @@ func (handler *UserHandler) GetUser(c *fiber.Ctx) error {
 		return c.SendStatus(http.StatusBadRequest)
 	}
 
-	user := handler.service.FindUserById(userId)
+	user, err := handler.service.FindUserById(userId)
+	if err != nil {
+		return c.SendStatus(http.StatusBadRequest)
+	}
+
 	return c.Status(http.StatusOK).JSON(user)
 }
