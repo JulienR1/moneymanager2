@@ -13,12 +13,12 @@ parse(EnvSchema, import.meta.env);
 const root = document.getElementById("root");
 render(
   () => (
-    <AuthProvider>
-      <Router>
+    <Router>
+      <AuthProvider>
         <App />
-      </Router>
-      <ToastProvider />
-    </AuthProvider>
+        <ToastProvider />
+      </AuthProvider>
+    </Router>
   ),
   root!,
 );

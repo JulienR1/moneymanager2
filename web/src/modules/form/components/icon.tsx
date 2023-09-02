@@ -28,9 +28,9 @@ const Icon: Component<IconProps> = (props) => {
   return (
     <Parent {...buttonProps}>
       <span
-        class={`material-symbols-outlined h-fit text-${props.size ?? "xl"} ${
-          iconProps.class ?? ""
-        }`}
+        class={`material-symbols-outlined h-fit text-inherit text-${
+          props.size ?? "xl"
+        } ${iconProps.class ?? ""}`}
       >
         {iconProps.name}
       </span>

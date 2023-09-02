@@ -3,6 +3,7 @@ import { Component, Show } from "solid-js";
 import { useAuth } from "@modules/auth/components/auth-provider";
 import { logout } from "@modules/auth/service";
 import Icon from "@modules/form/components/icon";
+import { cookToast } from "@modules/toasts/toast-factory";
 
 import Profile from "./profile";
 
@@ -12,6 +13,11 @@ type HeaderProps = {
 
 const Header: Component<HeaderProps> = (props) => {
   const auth = useAuth();
+
+  function handleLogout() {
+    logout();
+    cookToast("Déconnexion complétée").golden();
+  }
 
   return (
     <header class="flex items-center p-2 px-3 shadow-md md:px-6">
@@ -28,7 +34,7 @@ const Header: Component<HeaderProps> = (props) => {
             <Profile user={auth.user} />
           </div>
           <div class="hidden h-full group-hover:block">
-            <button class="flex h-full items-center" onClick={logout}>
+            <button class="flex h-full items-center" onClick={handleLogout}>
               <Icon name="logout" />
             </button>
           </div>

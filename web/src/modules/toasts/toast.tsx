@@ -1,7 +1,7 @@
 import Icon, { IconProps } from "@modules/form/components/icon";
 import { Component, Show, createSignal, onCleanup, onMount } from "solid-js";
 
-export type ToastColor = "primary" | "red";
+export type ToastColor = "primary" | "red" | "yellow";
 
 export type ToastProps = {
   id: number;
@@ -19,7 +19,7 @@ const Toast: Component<ToastProps & { onClose: (toastId: number) => void }> = (
   const [shown, setShown] = createSignal(false);
 
   onMount(() => {
-    setTimeout(() => setShown(true));
+    setTimeout(() => setShown(true), 20);
     storeTimeout(setTimeout(close, props.duration));
   });
 
@@ -41,11 +41,19 @@ const Toast: Component<ToastProps & { onClose: (toastId: number) => void }> = (
         classList={{
           "border-primary": props.color === "primary",
           "border-red-400": props.color === "red",
+          "border-yellow-400": props.color === "yellow",
           "shown [&.shown]:translate-x-0": shown(),
         }}
       >
         <Show when={props.icon}>
-          <div class="flex items-center justify-center">
+          <div
+            class="flex items-center justify-center"
+            classList={{
+              "text-primary": props.color === "primary",
+              "text-red-400": props.color === "red",
+              "text-yellow-400": props.color === "yellow",
+            }}
+          >
             <Icon {...props.icon!} />
           </div>
         </Show>

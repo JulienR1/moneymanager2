@@ -5,6 +5,7 @@ import {
   storeAccessToken,
 } from "@modules/fetch/token";
 import request from "@modules/fetch/utils";
+import { cookToast } from "@modules/toasts/toast-factory";
 import { createSignal } from "solid-js";
 import {
   AccessTokenSchema,
@@ -33,6 +34,9 @@ export async function login(credentials: LogInSchema) {
   }).post(AccessTokenSchema);
 
   if (!data.success) {
+    cookToast("Connexion impossible", {
+      description: "Les paramètres saisis sont invalides.",
+    }).burnt();
     logout();
     return;
   }
@@ -40,6 +44,8 @@ export async function login(credentials: LogInSchema) {
   storeAccessToken(data.output.accessToken);
   initializeTokenRefresh();
   refreshAuthenticatedUser();
+
+  cookToast("Connexion réussie").golden();
 }
 
 export function register(accountInfo: RegisterSchema) {
@@ -68,6 +74,9 @@ export function getUserIdFromToken() {
 
   const decodedToken = decodeToken(accessToken);
   if (!decodedToken.success) {
+    cookToast("Échec de reconnexion", {
+      description: "Veuillez vous reconnecter",
+    }).dry();
     return null;
   }
 
@@ -101,6 +110,10 @@ async function refreshAccessToken() {
   if (data.success) {
     storeAccessToken(data.output.accessToken);
   } else if (refreshTimeout) {
+    cookToast("Vous avez été déconnecté", {
+      description: "Votre connexion est expirée",
+      duration: 10_000,
+    }).burnt();
     logout();
   }
 }

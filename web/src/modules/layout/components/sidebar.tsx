@@ -116,7 +116,7 @@ const Sidebar: Component<SidebarProps> = (props) => {
         <div class="relative flex min-w-[200px]">
           <div class="p-4">
             <div
-              class="group flex items-center justify-between"
+              class="group flex items-center justify-between text-white"
               classList={{ "md:hover:flex-row-reverse": compact() }}
             >
               <A
