@@ -1,7 +1,14 @@
 import "./index.css";
 
-import { Navigate, Route, Routes } from "@solidjs/router";
-import { Accessor, Match, Switch, type Component } from "solid-js";
+import { Navigate, Route, Routes, useNavigate } from "@solidjs/router";
+import {
+  Accessor,
+  Match,
+  Switch,
+  createEffect,
+  on,
+  type Component,
+} from "solid-js";
 
 import { useAuth } from "@modules/auth/components/auth-provider";
 import Layout from "@modules/layout/layout";
@@ -13,6 +20,17 @@ import NotFound from "./pages/NotFound";
 
 const App: Component = () => {
   const auth = useAuth();
+  const navigate = useNavigate();
+  let initialLocation: string | null = window.location.pathname;
+
+  createEffect(
+    on(auth.connected, () => {
+      if (initialLocation && auth.connected()) {
+        navigate(initialLocation);
+        initialLocation = null;
+      }
+    }),
+  );
 
   return (
     <Layout connected={auth.connected}>

@@ -61,6 +61,7 @@ const SidebarLink: Component<
 > = (props) => {
   return (
     <A
+      end
       href={props.href}
       onClick={() => props.onClick()}
       class="opacity-80 hocus:bg-primary hocus:opacity-100"
