@@ -1,2 +1,2 @@
-20230902_users.sql
-20230902_profiles.sql
+20230904_initial_tables.sql
+20230904_profiles.sql
