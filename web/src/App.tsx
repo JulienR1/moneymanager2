@@ -16,6 +16,7 @@ import Layout from "@modules/layout/layout";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
+import NewTransaction from "./pages/NewTransaction";
 import NotFound from "./pages/NotFound";
 
 const App: Component = () => {
@@ -51,6 +52,9 @@ const Navigation: Component<{ connected: Accessor<boolean> }> = (props) => {
 
           <Match when={props.connected()}>
             <Route path="/" component={Dashboard} />
+            <Route path="/:team">
+              <Route path="/new" component={NewTransaction} />
+            </Route>
             <Route path={["register", "login"]}>
               <Navigate href="/" />
             </Route>

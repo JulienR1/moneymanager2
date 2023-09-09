@@ -27,7 +27,7 @@ const Input: Component<InputProps> = (props) => {
     <div class="py-2">
       <label
         for={props.name}
-        class="flex items-center rounded-lg shadow shadow-gray-400 focus-within:shadow-lg"
+        class="flex items-center rounded-lg bg-white shadow shadow-gray-400 focus-within:shadow-lg"
       >
         <Show when={props.leftIcon}>
           <Icon {...props.leftIcon!} class={"ml-2 " + props.leftIcon ?? ""} />
