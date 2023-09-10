@@ -3,6 +3,7 @@ package handlers
 import (
 	"JulienR1/moneymanager2/server/internal/repositories"
 	"JulienR1/moneymanager2/server/internal/services"
+	"JulienR1/moneymanager2/server/internal/validators"
 	"database/sql"
 
 	"github.com/go-playground/validator/v10"
@@ -12,6 +13,7 @@ import (
 
 func RegisterRoutes(app *fiber.App, db *sql.DB) {
 	validator := validator.New()
+	validator.RegisterValidation("password", validators.ValidatePassword)
 
 	userRepository := repositories.MakeUserRepository(db)
 
