@@ -6,10 +6,12 @@ import {
 } from "@modules/fetch/token";
 import request from "@modules/fetch/utils";
 import { cookToast } from "@modules/toasts/toast-factory";
+import { Navigator } from "@solidjs/router";
 import { createSignal } from "solid-js";
 import {
   AccessTokenSchema,
   LogInSchema,
+  NewUserSchema,
   RegisterSchema,
   UserSchema,
 } from "./schemas";
@@ -48,9 +50,34 @@ export async function login(credentials: LogInSchema) {
   cookToast("Connexion réussie").golden();
 }
 
-export function register(accountInfo: RegisterSchema) {
-  console.log("todo: register", accountInfo);
-  alert("Pas encore implémenté, contacter le développeur");
+export async function register(
+  accountInfo: RegisterSchema,
+  navigate: Navigator,
+) {
+  const payload = {
+    firstname: accountInfo.firstname,
+    lastname: accountInfo.lastname,
+    username: accountInfo.email,
+    password: accountInfo.password,
+  };
+
+  const data = await request("/register", { body: payload }).post(
+    NewUserSchema,
+  );
+
+  if (!data.success) {
+    cookToast("Échec de l'enregistrement", {
+      description: "Impossible de créer le nouvel utilisateur",
+      duration: 6000,
+    }).burnt();
+    return;
+  }
+
+  cookToast("Compte créé", {
+    description: "Contacter un administrateur pour l'activer",
+    duration: 8000,
+  }).golden();
+  navigate("/");
 }
 
 export function logout() {

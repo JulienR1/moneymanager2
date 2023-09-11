@@ -3,7 +3,7 @@ package services
 import (
 	"JulienR1/moneymanager2/server/internal/dtos"
 	"JulienR1/moneymanager2/server/internal/repositories"
-	"fmt"
+	"errors"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -16,15 +16,24 @@ func MakeUserService(userRepository *repositories.UserRepository) UserService {
 	return UserService{userRepository: userRepository}
 }
 
-// TODO
-func (service *UserService) RegisterUser(firstname, lastname, username, password string) error {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		return err
+func (service *UserService) RegisterUser(firstname, lastname, username, password string) (*dtos.NewUserDto, error) {
+	existingUser, _ := service.userRepository.FindUserByEmail(username)
+
+	if existingUser != nil {
+		return nil, errors.New("An account is already registered with this email.")
 	}
 
-	fmt.Println(string(hashedPassword))
-	return nil
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, err
+	}
+
+	userId, err := service.userRepository.CreateUser(firstname, lastname, username, string(hashedPassword))
+	if err != nil {
+		return nil, err
+	}
+
+	return &dtos.NewUserDto{Id: userId}, nil
 }
 
 func (service *UserService) FindUserById(id int) (*dtos.UserDto, error) {

@@ -19,7 +19,7 @@ type RegisterRequest struct {
 	Firstname string `json:"firstname" validate:"required,max=64"`
 	Lastname  string `json:"lastname" validate:"required,max=64"`
 	Username  string `json:"username" validate:"required,max=256,email"`
-	Password  string `json:"password" validate:"required,max=72,min=8,password"`
+	Password  string `json:"password" validate:"required,max=72,password"`
 }
 
 func MakeUserHandler(v *validator.Validate, s *services.UserService) UserHandler {
@@ -37,11 +37,12 @@ func (handler *UserHandler) Register(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(jsonutils.NewError(err))
 	}
 
-	if err := handler.service.RegisterUser(input.Firstname, input.Lastname, input.Username, input.Password); err != nil {
+	userPayload, err := handler.service.RegisterUser(input.Firstname, input.Lastname, input.Username, input.Password)
+	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(jsonutils.NewError(err))
 	}
 
-	return c.SendStatus(http.StatusOK)
+	return c.Status(http.StatusOK).JSON(userPayload)
 }
 
 func (handler *UserHandler) GetUser(c *fiber.Ctx) error {

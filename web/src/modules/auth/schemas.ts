@@ -60,6 +60,8 @@ export const UserSchema = object({
   pictureUrl: nullable(string()),
 });
 
+export const NewUserSchema = object({id: number() })
+
 export type LogInSchema = Output<typeof LogInSchema>;
 export type RegisterSchema = Output<ReturnType<typeof makeRegisterSchema>>;
 export type UserSchema = Output<typeof UserSchema>;

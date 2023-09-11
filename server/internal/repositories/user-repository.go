@@ -19,6 +19,17 @@ func MakeUserRepository(db *sql.DB) UserRepository {
 	return UserRepository{db: db}
 }
 
+func (repo *UserRepository) CreateUser(firstname, lastname, email, hashedPassword string) (int, error) {
+	row := repo.db.QueryRow("INSERT INTO users (firstname, lastname, email, password) VALUES ($1, $2, $3, $4) RETURNING id", firstname, lastname, email, hashedPassword)
+
+	var userId int
+	if err := row.Scan(&userId); err != nil {
+		return 0, err
+	}
+
+	return userId, nil
+}
+
 func (repo *UserRepository) FindUserById(id int) (*UserRecord, error) {
 	query := repo.db.QueryRow(`SELECT * FROM profiles WHERE id=$1`, id)
 	return findUser(query)

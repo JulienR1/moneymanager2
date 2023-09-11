@@ -3,16 +3,18 @@ import Form from "@modules/form/components/form";
 import Input from "@modules/form/components/input";
 import PasswordInput from "@modules/form/components/password-input";
 
+import { useNavigate } from "@solidjs/router";
 import { createSignal } from "solid-js";
 import { makeRegisterSchema } from "../schemas";
 import { register } from "../service";
 
 const RegisterForm = () => {
+  const navigate = useNavigate();
   const [password, setPassword] = createSignal("");
   const validationSchema = () => makeRegisterSchema(password());
 
   return (
-    <Form schema={validationSchema()} onSubmit={register}>
+    <Form schema={validationSchema()} onSubmit={(d) => register(d, navigate)}>
       <Input
         id="firstname"
         name="firstname"
