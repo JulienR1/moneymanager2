@@ -3,31 +3,19 @@ import Footer from "./components/footer";
 import Header from "./components/header";
 import Sidebar, { SidebarLinkProps } from "./components/sidebar";
 
-type LayoutProps = { connected: Accessor<boolean>; children: JSX.Element };
-
-const sidebarLinks = {
-  connected: [
-    { href: "/", icon: { name: "home" }, label: "Tableau de bord" },
-    {
-      href: "/me/new",
-      label: "Nouvelle transaction",
-      icon: { name: "receipt_long" },
-    },
-  ],
-  disconnected: [
-    { href: "/login", icon: { name: "login" }, label: "Connexion" },
-    { href: "/register", icon: { name: "person" }, label: "S'enregistrer" },
-  ],
-} satisfies Record<string, SidebarLinkProps[]>;
+type LayoutProps = {
+  links: Accessor<{
+    primary: Array<SidebarLinkProps>;
+    dashboards?: Array<SidebarLinkProps>;
+  }>;
+  children: JSX.Element;
+};
 
 const Layout: Component<LayoutProps> = (props) => {
   const [sidebarVisible, setSidebarVisible] = createSignal(false);
 
   const showSidebar = () => setSidebarVisible(true);
   const hideSidebar = () => setSidebarVisible(false);
-
-  const links = () =>
-    props.connected() ? sidebarLinks.connected : sidebarLinks.disconnected;
 
   return (
     <div class="relative flex min-h-[100vh] min-w-[100vw] bg-gray-50 md:flex-row-reverse">
@@ -38,9 +26,10 @@ const Layout: Component<LayoutProps> = (props) => {
       </div>
 
       <Sidebar
-        visible={sidebarVisible()}
         onClose={hideSidebar}
-        links={links()}
+        visible={sidebarVisible()}
+        links={() => props.links().primary}
+        dashboardsLinks={() => props.links().dashboards ?? []}
       />
     </div>
   );

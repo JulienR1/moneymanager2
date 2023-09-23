@@ -4,12 +4,19 @@ import Backdrop from "./backdrop";
 import { A } from "@solidjs/router";
 import { Accessor, Component, Index, Show, createSignal } from "solid-js";
 
-export type SidebarLinkProps = { href: string; label: string; icon: IconProps };
+export type SidebarLinkProps = {
+  href: string;
+  label: string;
+  icon: IconProps;
+  disabled?: boolean;
+  end?: boolean;
+};
 
 type SidebarProps = {
   visible: boolean;
   onClose: () => void;
-  links: SidebarLinkProps[];
+  links: Accessor<Array<SidebarLinkProps>>;
+  dashboardsLinks: Accessor<Array<SidebarLinkProps>>;
 };
 
 const CloseButton: Component<Pick<SidebarProps, "onClose">> = (props) => {
@@ -21,72 +28,6 @@ const CloseButton: Component<Pick<SidebarProps, "onClose">> = (props) => {
         onClick={props.onClose}
       />
     </div>
-  );
-};
-
-const LinkGroup: Component<{
-  title?: string;
-  onClick: Function;
-  compact: Accessor<boolean>;
-  links: SidebarLinkProps[];
-}> = (props) => {
-  return (
-    <section class="pt-6">
-      <Show when={props.title}>
-        <h3 class="pl-2 text-sm font-light text-white">{props.title}</h3>
-      </Show>
-
-      <ul>
-        <Index each={props.links}>
-          {(link) => (
-            <li class="my-1">
-              <SidebarLink
-                compact={props.compact}
-                onClick={props.onClick}
-                {...link()}
-              />
-            </li>
-          )}
-        </Index>
-      </ul>
-    </section>
-  );
-};
-
-const SidebarLink: Component<
-  {
-    onClick: Function;
-    compact: Accessor<boolean>;
-  } & SidebarLinkProps
-> = (props) => {
-  return (
-    <A
-      end
-      href={props.href}
-      onClick={() => props.onClick()}
-      class="opacity-80 hocus:bg-primary hocus:opacity-100"
-      activeClass="bg-primary opacity-100 font-bold"
-    >
-      <div
-        classList={{
-          "flex w-56 md:w-fit rounded bg-inherit p-2 text-white transition-all duration-300":
-            true,
-          "md:min-w-[288px]": !props.compact(),
-          "md:min-w-[40px]": props.compact(),
-        }}
-      >
-        <Icon {...props.icon} />
-        <p
-          classList={{
-            "pl-2 transition-all duration-300 truncate": true,
-            "max-w-[288px] opacity-100 visible": !props.compact(),
-            "md:pl-0 max-w-0 max-h-0 opacity-0 invisible": props.compact(),
-          }}
-        >
-          {props.label}
-        </p>
-      </div>
-    </A>
   );
 };
 
@@ -148,11 +89,97 @@ const Sidebar: Component<SidebarProps> = (props) => {
               />
             </div>
 
-            <LinkGroup
-              compact={compact}
-              links={props.links}
-              onClick={props.onClose}
-            />
+            <section class="pt-6">
+              <ul>
+                <Index each={props.links()}>
+                  {(link) => (
+                    <li class="my-1">
+                      <A
+                        {...link()}
+                        onClick={props.onClose}
+                        activeClass="bg-primary opacity-100"
+                        classList={{
+                          "opacity-80 hocus:bg-primary hocus:opacity-100":
+                            !link().disabled,
+                          "opacity-50 cursor-default": !!link().disabled,
+                        }}
+                      >
+                        <div
+                          classList={{
+                            "flex w-56 md:w-fit rounded bg-inherit p-2 text-white transition-all duration-300":
+                              true,
+                            "md:min-w-[288px]": !compact(),
+                            "md:min-w-[40px]": compact(),
+                          }}
+                        >
+                          <Icon {...link().icon} />
+                          <p
+                            class="truncate pl-2 transition-all duration-300 first-letter:capitalize"
+                            classList={{
+                              "max-w-[288px] opacity-100 visible": !compact(),
+                              "md:pl-0 max-w-0 max-h-0 opacity-0 invisible":
+                                compact(),
+                            }}
+                          >
+                            {link().label}
+                          </p>
+                        </div>
+                      </A>
+                    </li>
+                  )}
+                </Index>
+              </ul>
+            </section>
+
+            <Show when={props.dashboardsLinks().length > 0}>
+              <section class="pt-6">
+                <h3 class="pl-2 text-sm font-semibold text-white">
+                  <Show when={!compact()} fallback={<hr class="w-1/3" />}>
+                    Tableaux de bord
+                  </Show>
+                </h3>
+
+                <ul>
+                  <Index each={props.dashboardsLinks()}>
+                    {(link) => (
+                      <li class="my-1">
+                        <A
+                          href={link().href}
+                          onClick={props.onClose}
+                          activeClass="bg-primary opacity-100"
+                          classList={{
+                            "opacity-80 hocus:bg-primary hocus:opacity-100":
+                              !link().disabled,
+                            "opacity-50 cursor-default": !!link().disabled,
+                          }}
+                        >
+                          <div
+                            classList={{
+                              "flex w-56 md:w-fit rounded bg-inherit p-2 text-white transition-all duration-300":
+                                true,
+                              "md:min-w-[288px]": !compact(),
+                              "md:min-w-[40px]": compact(),
+                            }}
+                          >
+                            <Icon {...link().icon} />
+                            <p
+                              class="truncate pl-2 transition-all duration-300 first-letter:capitalize"
+                              classList={{
+                                "max-w-[288px] opacity-100 visible": !compact(),
+                                "md:pl-0 max-w-0 max-h-0 opacity-0 invisible":
+                                  compact(),
+                              }}
+                            >
+                              {link().label}
+                            </p>
+                          </div>{" "}
+                        </A>
+                      </li>
+                    )}
+                  </Index>
+                </ul>
+              </section>
+            </Show>
           </div>
 
           <CloseButton onClose={props.onClose} />

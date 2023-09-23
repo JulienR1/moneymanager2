@@ -13,6 +13,8 @@ import {
 import { useAuth } from "@modules/auth/components/auth-provider";
 import Layout from "@modules/layout/layout";
 
+import { useDashboard } from "@modules/dashboards/dashboard-provider";
+import { makeSidebarLinks } from "@modules/layout/links";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
@@ -33,8 +35,12 @@ const App: Component = () => {
     }),
   );
 
+  const d = useDashboard();
+  const links = () =>
+    makeSidebarLinks(auth.connected(), d.dashboards(), d.selectedDashboard());
+
   return (
-    <Layout connected={auth.connected}>
+    <Layout links={links}>
       <Navigation connected={auth.connected} />
     </Layout>
   );
@@ -51,9 +57,10 @@ const Navigation: Component<{ connected: Accessor<boolean> }> = (props) => {
           </Match>
 
           <Match when={props.connected()}>
-            <Route path="/" component={Dashboard} />
-            <Route path="/:team">
-              <Route path="/new" component={NewTransaction} />
+            <Route path="/" element={<Navigate href={() => "/personal"} />} />
+            <Route path="/:dashboardKey" component={Dashboard} />
+            <Route path="/:dashboardKey">
+              <Route path="/new/*" component={NewTransaction} />
             </Route>
           </Match>
         </Switch>

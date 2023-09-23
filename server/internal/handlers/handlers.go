@@ -1,11 +1,13 @@
 package handlers
 
 import (
+	jsonutils "JulienR1/moneymanager2/server/internal/pkg/json-utils"
 	repoutils "JulienR1/moneymanager2/server/internal/pkg/repo-utils"
 	"JulienR1/moneymanager2/server/internal/repositories"
 	"JulienR1/moneymanager2/server/internal/services"
 	"JulienR1/moneymanager2/server/internal/validators"
-	"database/sql"
+	"errors"
+	"net/http"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -17,14 +19,17 @@ func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
 	validator.RegisterValidation("password", validators.ValidatePassword)
 
 	userRepository := repositories.MakeUserRepository(db)
+	dashboardRepository := repositories.MakeDashboardRepository(db)
 
 	tokenService := services.MakeTokenService()
 	cookieService := services.MakeCookieService()
 	authService := services.MakeAuthService(&tokenService, &userRepository)
 	userService := services.MakeUserService(&userRepository, &dashboardRepository, db)
+	dashboardService := services.MakeDashboardService(&dashboardRepository, &categoryService)
 
 	authHandler := MakeAuthHandler(validator, &authService, &tokenService, &cookieService)
 	userHandler := MakeUserHandler(validator, &userService)
+	dashboardHandler := MakeDashboardHandler(validator, &dashboardService, &userService)
 
 	authMiddleware := makeAuthMiddleware(&authHandler)
 
@@ -38,6 +43,9 @@ func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
 	app.Post("/register", userHandler.Register)
 	users := app.Group("/users").Use(authMiddleware)
 	users.Get("/:userId", userHandler.GetUser)
+
+	app.Use(authMiddleware).Get("/dashboards", dashboardHandler.GetAllDashboardsForUser)
+	app.Use(authMiddleware).Get("/dashboards/:dashboardId", dashboardHandler.GetDashboardForUser)
 }
 
 func rootController(c *fiber.Ctx) error {
