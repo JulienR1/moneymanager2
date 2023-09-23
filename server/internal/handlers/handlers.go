@@ -27,11 +27,11 @@ func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
 	userService := services.MakeUserService(&userRepository, &dashboardRepository, db)
 	dashboardService := services.MakeDashboardService(&dashboardRepository, &categoryService)
 
-	authHandler := MakeAuthHandler(validator, &authService, &tokenService, &cookieService)
 	userHandler := MakeUserHandler(validator, &userService)
+	authHandler := MakeAuthHandler(validator, &authService, &tokenService, &cookieService)
 	dashboardHandler := MakeDashboardHandler(validator, &dashboardService, &userService)
 
-	authMiddleware := makeAuthMiddleware(&authHandler)
+	authMiddleware := makeAuthMiddleware(&authHandler, &userHandler)
 
 	app.Get("/", rootController)
 
@@ -52,12 +52,16 @@ func rootController(c *fiber.Ctx) error {
 	return c.SendString("Server is running")
 }
 
-func makeAuthMiddleware(authHandler *AuthHandler) func(*fiber.Ctx) error {
+func makeAuthMiddleware(authHandler *AuthHandler, userHandler *UserHandler) func(*fiber.Ctx) error {
 	validateAuth := func(c *fiber.Ctx, key string) (bool, error) {
 		userId, err := authHandler.service.Authenticate(key[7:]) // [7:] --> Remove "Bearer "
 
 		if err != nil {
 			return false, keyauth.ErrMissingOrMalformedAPIKey
+		}
+
+		if user, err := userHandler.service.FindUserById(userId); user == nil || err != nil {
+			return false, c.Status(http.StatusBadRequest).JSON(jsonutils.NewError(errors.New("invalid user")))
 		}
 
 		c.Locals("userId", userId)
