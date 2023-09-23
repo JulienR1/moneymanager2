@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	repoutils "JulienR1/moneymanager2/server/internal/pkg/repo-utils"
 	"JulienR1/moneymanager2/server/internal/repositories"
 	"JulienR1/moneymanager2/server/internal/services"
 	"JulienR1/moneymanager2/server/internal/validators"
@@ -11,16 +12,16 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/keyauth"
 )
 
-func RegisterRoutes(app *fiber.App, db *sql.DB) {
+func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
 	validator := validator.New()
 	validator.RegisterValidation("password", validators.ValidatePassword)
 
 	userRepository := repositories.MakeUserRepository(db)
 
-	userService := services.MakeUserService(&userRepository)
 	tokenService := services.MakeTokenService()
 	cookieService := services.MakeCookieService()
 	authService := services.MakeAuthService(&tokenService, &userRepository)
+	userService := services.MakeUserService(&userRepository, &dashboardRepository, db)
 
 	authHandler := MakeAuthHandler(validator, &authService, &tokenService, &cookieService)
 	userHandler := MakeUserHandler(validator, &userService)

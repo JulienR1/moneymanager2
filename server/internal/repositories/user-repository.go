@@ -1,6 +1,9 @@
 package repositories
 
-import "database/sql"
+import (
+	repoutils "JulienR1/moneymanager2/server/internal/pkg/repo-utils"
+	"database/sql"
+)
 
 type UserRecord struct {
 	Id         int
@@ -12,17 +15,16 @@ type UserRecord struct {
 }
 
 type UserRepository struct {
-	db *sql.DB
+	db *repoutils.Database
 }
 
-func MakeUserRepository(db *sql.DB) UserRepository {
+func MakeUserRepository(db *repoutils.Database) UserRepository {
 	return UserRepository{db: db}
 }
 
 func (repo *UserRepository) CreateUser(firstname, lastname, email, hashedPassword string) (int, error) {
-	row := repo.db.QueryRow("INSERT INTO users (firstname, lastname, email, password) VALUES ($1, $2, $3, $4) RETURNING id", firstname, lastname, email, hashedPassword)
-
 	var userId int
+	row := repo.db.Connection.QueryRow("INSERT INTO users (firstname, lastname, email, password) VALUES ($1, $2, $3, $4) RETURNING id", firstname, lastname, email, hashedPassword)
 	if err := row.Scan(&userId); err != nil {
 		return 0, err
 	}
@@ -31,12 +33,12 @@ func (repo *UserRepository) CreateUser(firstname, lastname, email, hashedPasswor
 }
 
 func (repo *UserRepository) FindUserById(id int) (*UserRecord, error) {
-	query := repo.db.QueryRow(`SELECT * FROM profiles WHERE id=$1`, id)
+	query := repo.db.Connection.QueryRow(`SELECT * FROM profiles WHERE id=$1`, id)
 	return findUser(query)
 }
 
 func (repo *UserRepository) FindUserByEmail(email string) (*UserRecord, error) {
-	query := repo.db.QueryRow(`SELECT * FROM profiles WHERE email=$1`, email)
+	query := repo.db.Connection.QueryRow(`SELECT * FROM profiles WHERE email=$1`, email)
 	return findUser(query)
 }
 

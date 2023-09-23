@@ -2,6 +2,7 @@ package main
 
 import (
 	"JulienR1/moneymanager2/server/internal/handlers"
+	repoutils "JulienR1/moneymanager2/server/internal/pkg/repo-utils"
 	"database/sql"
 	"log"
 	"os"
@@ -28,6 +29,8 @@ func main() {
 		AllowOrigins:     os.Getenv("ALLOWED_ORIGINS"),
 		AllowCredentials: true,
 	}))
-	handlers.RegisterRoutes(app, db)
+
+	conn := repoutils.MakeDatabase(db)
+	handlers.RegisterRoutes(app, &conn)
 	log.Fatal(app.Listen(":" + os.Getenv("PORT")))
 }
