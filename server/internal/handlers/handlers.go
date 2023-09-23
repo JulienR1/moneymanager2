@@ -19,15 +19,19 @@ func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
 	validator.RegisterValidation("password", validators.ValidatePassword)
 
 	userRepository := repositories.MakeUserRepository(db)
+	iconRepository := repositories.MakeIconRepository(db)
 	dashboardRepository := repositories.MakeDashboardRepository(db)
+	categoryRepository := repositories.MakeCategoryRepository(db)
 
 	tokenService := services.MakeTokenService()
 	cookieService := services.MakeCookieService()
 	authService := services.MakeAuthService(&tokenService, &userRepository)
 	userService := services.MakeUserService(&userRepository, &dashboardRepository, db)
+	categoryService := services.MakeCategoryService(&categoryRepository, &iconRepository)
 	dashboardService := services.MakeDashboardService(&dashboardRepository, &categoryService)
 
 	userHandler := MakeUserHandler(validator, &userService)
+	categoryHandler := MakeCategoryHandler(validator, &categoryService, &dashboardService)
 	authHandler := MakeAuthHandler(validator, &authService, &tokenService, &cookieService)
 	dashboardHandler := MakeDashboardHandler(validator, &dashboardService, &userService)
 
@@ -46,6 +50,9 @@ func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
 
 	app.Use(authMiddleware).Get("/dashboards", dashboardHandler.GetAllDashboardsForUser)
 	app.Use(authMiddleware).Get("/dashboards/:dashboardId", dashboardHandler.GetDashboardForUser)
+
+	dashboardGroup := app.Group("/dashboards/:dashboardId").Use(authMiddleware)
+	dashboardGroup.Post("/categories", categoryHandler.CreateCategory)
 }
 
 func rootController(c *fiber.Ctx) error {

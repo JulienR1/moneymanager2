@@ -1,6 +1,10 @@
+import { Dashboard } from "@/resources/schema";
 import Form from "@modules/form/components/form";
+import Icon from "@modules/form/components/icon";
 import Input from "@modules/form/components/input";
-import { Component, createSignal } from "solid-js";
+
+import { A, useLocation } from "@solidjs/router";
+import { Accessor, Component, Index, Show, createSignal } from "solid-js";
 import { any } from "valibot";
 import Accordion from "./accordion";
 import Card from "./card";
@@ -8,9 +12,13 @@ import Toggle from "./toggle";
 
 type TransactionType = "refund" | "expense";
 
-type NewTransactionProps = {};
+type NewTransactionProps = {
+  dashboard: Accessor<Dashboard>;
+};
 
 const NewTransactionForm: Component<NewTransactionProps> = (props) => {
+  const location = useLocation();
+
   const [transactionType, setTransactionType] =
     createSignal<TransactionType>("expense");
 
@@ -20,7 +28,7 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
 
   return (
     <Form schema={any()} onSubmit={(s) => console.log(s)}>
-      <div>
+      <div class="mx-auto max-w-lg md:max-w-2xl">
         <Card>
           <div class="mx-auto grid w-fit grid-cols-3 items-center justify-center gap-2">
             <div class="ml-auto">
@@ -51,7 +59,7 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
           title="Informations générales"
           leftIcon={{ name: "settings" }}
         >
-          <div>
+          <div class="grid grid-cols-[auto_180px] gap-3">
             <Input
               label="Description"
               name="description"
@@ -67,7 +75,7 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
             />
           </div>
 
-          <div>
+          <div class="grid grid-cols-[auto_180px] gap-3">
             <Input
               label="Facture"
               name="receipt"
@@ -86,7 +94,35 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
           </div>
         </Accordion>
 
-        <Accordion>dawd</Accordion>
+        <Accordion title="Catégories" leftIcon={{ name: "category" }}>
+          <Show
+            when={props.dashboard().categories.length > 0}
+            fallback={
+              <p class="opacity-70">
+                Aucune catégorie n'est associée au tableau de bord.
+              </p>
+            }
+          >
+            <ul>
+              <Index each={props.dashboard().categories}>
+                {(category) => <li>{category().label}</li>}
+              </Index>
+            </ul>
+          </Show>
+
+          <div>
+            <A
+              href={location.pathname.replace(/\/$/, "") + "/category"}
+              class="group ml-auto mt-2 flex w-fit items-center rounded-2xl bg-gradient-to-tr from-primary to-secondary px-5 py-1 text-sm text-white hover:shadow-md"
+            >
+              <span class="font-semibold">Ajouter</span>
+              <Icon
+                name="add"
+                class="pl-2 transition-transform group-hover:translate-x-2"
+              />
+            </A>
+          </div>
+        </Accordion>
       </div>
     </Form>
   );
