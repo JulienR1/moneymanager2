@@ -25,7 +25,7 @@ const [authenticatedUserId, setAuthenticatedUserId] = createSignal(
 
 export { authenticatedUserId };
 
-export async function login(credentials: LogInSchema) {
+export async function login(credentials: LogInSchema, navigate: Navigator) {
   const payload = {
     username: credentials.email,
     password: credentials.password,
@@ -48,6 +48,7 @@ export async function login(credentials: LogInSchema) {
   refreshAuthenticatedUser();
 
   cookToast("Connexion réussie").golden();
+  navigate("/");
 }
 
 export async function register(

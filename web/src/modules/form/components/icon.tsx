@@ -5,6 +5,7 @@ type FontSize = "xs" | "sm" | "base" | "lg" | "xl" | `${XLs}xl`;
 
 export type IconProps = {
   class?: string;
+  style?: JSX.CSSProperties | string;
   size?: FontSize;
   name: string;
   onClick?: (e: MouseEvent) => void;
@@ -31,6 +32,7 @@ const Icon: Component<IconProps> = (props) => {
         class={`material-symbols-outlined h-fit text-inherit text-${
           props.size ?? "xl"
         } ${iconProps.class ?? ""}`}
+        style={props.style}
       >
         {iconProps.name}
       </span>

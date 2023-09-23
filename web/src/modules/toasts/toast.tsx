@@ -34,7 +34,7 @@ const Toast: Component<ToastProps & { onClose: (toastId: number) => void }> = (
   return (
     <div
       class="max-h-0 transition-all duration-[400ms]"
-      classList={{ "max-h-[80px] mt-2": shown() }}
+      classList={{ "max-h-[120px] mt-2": shown() }}
     >
       <div
         class="pointer-events-auto ml-auto flex w-fit max-w-[300px] translate-x-[120%] overflow-visible rounded border-l-4 border-solid bg-white px-2 py-2 shadow-lg transition-all duration-[400ms]"

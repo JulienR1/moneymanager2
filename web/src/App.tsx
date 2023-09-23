@@ -55,9 +55,6 @@ const Navigation: Component<{ connected: Accessor<boolean> }> = (props) => {
             <Route path="/:team">
               <Route path="/new" component={NewTransaction} />
             </Route>
-            <Route path={["register", "login"]}>
-              <Navigate href="/" />
-            </Route>
           </Match>
         </Switch>
       </Route>
