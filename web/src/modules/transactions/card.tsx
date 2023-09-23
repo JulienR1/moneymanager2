@@ -10,7 +10,7 @@ export type CardProps = {
 
 const Card: Component<CardProps> = (props) => {
   return (
-    <div class="m-4 rounded-md bg-white shadow-md">
+    <div class="relative m-4 rounded-md bg-white shadow-md">
       <Show when={props.title}>
         <div class="flex items-center border-b-2 p-4 pb-2 pt-6">
           <Show when={props.leftIcon}>

@@ -5,6 +5,7 @@ import { parse } from "valibot";
 import { EnvSchema } from "./env";
 
 import AuthProvider from "@modules/auth/components/auth-provider";
+import ModalProvider from "@modules/modals/modal-provider";
 import ToastProvider from "@modules/toasts/toast-provider";
 import App from "./App";
 
@@ -14,10 +15,12 @@ const root = document.getElementById("root");
 render(
   () => (
     <Router>
-      <AuthProvider>
-        <App />
-        <ToastProvider />
-      </AuthProvider>
+      <ModalProvider>
+        <AuthProvider>
+            <App />
+          <ToastProvider />
+        </AuthProvider>
+      </ModalProvider>
     </Router>
   ),
   root!,
