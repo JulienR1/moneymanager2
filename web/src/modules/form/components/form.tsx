@@ -63,8 +63,9 @@ const Form = <S extends BaseSchema>(props: Props<S>) => {
 
     const validationResult = validateForm();
     if (validationResult.success) {
-      formRef.reset();
       others.onSubmit(validationResult.output);
+      formRef.reset();
+      setIsDirty(false);
     }
   }
 

@@ -1,5 +1,5 @@
 import Backdrop from "@modules/layout/components/backdrop";
-import Card, { CardProps } from "@modules/transactions/card";
+import Card, { CardProps } from "@modules/transactions/components/card";
 
 import { Component, JSX, onCleanup, onMount } from "solid-js";
 import { useModal } from "./modal-provider";

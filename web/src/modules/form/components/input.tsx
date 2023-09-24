@@ -7,6 +7,7 @@ export type InputProps = Omit<
   JSX.InputHTMLAttributes<HTMLInputElement>,
   "oninput" | "onInput"
 > & {
+  id: string;
   label: string;
   leftIcon?: IconProps;
   rightIcon?: IconProps;

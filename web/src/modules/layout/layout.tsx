@@ -18,7 +18,7 @@ const Layout: Component<LayoutProps> = (props) => {
   const hideSidebar = () => setSidebarVisible(false);
 
   return (
-    <div class="relative flex min-h-[100vh] min-w-[100vw] bg-gray-50 md:flex-row-reverse">
+    <div class="w-100% relative flex min-h-[100vh] bg-gray-50 md:flex-row-reverse">
       <div class="block h-full w-full">
         <Header onEnableSidebar={showSidebar} />
         <main>{props.children}</main>

@@ -30,7 +30,10 @@ const NewTransaction: Component<NewTransactionProps> = (props) => {
 
   return (
     <Show when={d.selectedDashboard()} fallback={<p>loading</p>}>
-      <NewTransactionForm dashboard={() => d.selectedDashboard()!} />
+      <NewTransactionForm
+        closeEndpoint={location.pathname.replace(/\/?new/, "")}
+        dashboard={() => d.selectedDashboard()!}
+      />
 
       <Modal
         onClose={onModalClose}
