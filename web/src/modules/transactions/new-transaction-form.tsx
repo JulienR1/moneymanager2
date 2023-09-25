@@ -21,7 +21,7 @@ import Category from "./components/category";
 import Toggle from "./components/toggle";
 import { NewTransactionSchema } from "./schema";
 
-type TransactionType = "refund" | "expense";
+type TransactionType = "income" | "expense";
 
 type NewTransactionProps = {
   closeEndpoint: string;
@@ -44,7 +44,7 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
     createSignal<TransactionType>("expense");
 
   function toggleTransactionType() {
-    setTransactionType((t) => (t === "expense" ? "refund" : "expense"));
+    setTransactionType((t) => (t === "expense" ? "income" : "expense"));
   }
 
   const generalAccordion = useAccordion();
@@ -81,15 +81,19 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
               Dépense
             </p>
           </div>
-          <Toggle onToggle={toggleTransactionType} class="mx-auto" />
+          <Toggle
+            class="mx-auto"
+            name="transactionType"
+            onToggle={toggleTransactionType}
+          />
           <div>
             <p
               class="duration-250 after:duration-250 w-fit transition-all after:block after:h-1 after:w-full after:max-w-0 after:rounded-sm after:bg-primary after:transition-all"
               classList={{
-                "after:max-w-[200px]": transactionType() === "refund",
+                "after:max-w-[200px]": transactionType() === "income",
               }}
             >
-              Remboursement
+              Revenu
             </p>
           </div>
         </div>
@@ -114,6 +118,7 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
             name="amount"
             placeholder="Saisir le montant"
             type="number"
+            step="0.01"
             leftIcon={{ name: "payments" }}
           />
         </div>

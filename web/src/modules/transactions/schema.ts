@@ -1,6 +1,7 @@
 import {
   Output,
   any,
+  boolean,
   coerce,
   date,
   minLength,
@@ -9,9 +10,14 @@ import {
   object,
   regex,
   string,
+  transform,
 } from "valibot";
 
 export const NewTransactionSchema = object({
+  transactionType: transform(
+    boolean("Sélectionner un type de transaction"),
+    (v) => (v ? "expense" : "income"),
+  ),
   description: string("Format invalide", [
     minLength(1, "Saisir une description"),
     regex(/[a-zA-Z0-9]/, "Seuls les caractères alphanumériques sont acceptés"),
