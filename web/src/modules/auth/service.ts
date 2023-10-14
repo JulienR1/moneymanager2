@@ -31,11 +31,11 @@ export async function login(credentials: LogInSchema, navigate: Navigator) {
     password: credentials.password,
   };
 
-  const data = await request("/auth/login", {
+  const result = await request("/auth/login", {
     body: payload,
   }).post(AccessTokenSchema);
 
-  if (!data.success) {
+  if (!result.success) {
     cookToast("Connexion impossible", {
       description: "Les paramètres saisis sont invalides.",
     }).burnt();
@@ -43,7 +43,7 @@ export async function login(credentials: LogInSchema, navigate: Navigator) {
     return;
   }
 
-  storeAccessToken(data.output.accessToken);
+  storeAccessToken(result.data.accessToken);
   initializeTokenRefresh();
   refreshAuthenticatedUser();
 
@@ -108,7 +108,7 @@ export function getUserIdFromToken() {
     return null;
   }
 
-  return decodedToken.output.sub;
+  return decodedToken.data.sub;
 }
 
 export async function fetchAuthenticatedUser(
@@ -123,7 +123,7 @@ export async function fetchAuthenticatedUser(
     return null;
   }
 
-  return user.output;
+  return user.data;
 }
 
 export function initializeTokenRefresh() {
@@ -134,9 +134,9 @@ export function initializeTokenRefresh() {
 }
 
 async function refreshAccessToken() {
-  const data = await request("/auth/refresh").post(AccessTokenSchema);
-  if (data.success) {
-    storeAccessToken(data.output.accessToken);
+  const result = await request("/auth/refresh").post(AccessTokenSchema);
+  if (result.success) {
+    storeAccessToken(result.data.accessToken);
   } else if (refreshTimeout) {
     cookToast("Vous avez été déconnecté", {
       description: "Votre connexion est expirée",

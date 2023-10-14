@@ -1,4 +1,4 @@
-import { BaseSchema, SafeParseResult, safeParse } from "valibot";
+import z from "zod";
 import { getAccessToken } from "./token";
 
 type ShortRequestInit = Omit<RequestInit, "method" | "headers" | "body"> & {
@@ -11,7 +11,7 @@ export default function request(
   args?: ShortRequestInit,
 ): Record<
   Methods,
-  <S extends BaseSchema>(schema: S) => Promise<SafeParseResult<S>>
+  <S extends z.Schema>(schema: S) => Promise<ReturnType<S["safeParse"]>>
 > {
   return {
     get: (schema) => makeRequest(schema, url, "get", args),
@@ -21,12 +21,12 @@ export default function request(
   };
 }
 
-async function makeRequest<S extends BaseSchema>(
+async function makeRequest<S extends z.Schema>(
   schema: S,
   url: string,
   method: Methods,
   args?: ShortRequestInit,
-): Promise<SafeParseResult<S>> {
+): Promise<ReturnType<S["safeParse"]>> {
   const headers = new Headers();
   headers.append("Content-Type", "application/json");
 
@@ -50,8 +50,8 @@ async function makeRequest<S extends BaseSchema>(
     const response = await fetch(import.meta.env.VITE_SERVER_URL + url, params);
     const data = await response.json();
 
-    return safeParse(schema, data);
+    return schema.safeParse(data) as ReturnType<S["safeParse"]>;
   } catch (e) {
-    return safeParse(schema, e);
+    return schema.safeParse(e) as ReturnType<S["safeParse"]>;
   }
 }

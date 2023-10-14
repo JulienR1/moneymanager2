@@ -1,10 +1,10 @@
 import { Dashboard } from "@/resources/schema";
 import Button from "@modules/form/components/button";
+import FieldError from "@modules/form/components/field-error";
 import Form, { useForm } from "@modules/form/components/form";
 import Icon from "@modules/form/components/icon";
 import Input from "@modules/form/components/input";
 
-import FieldError from "@modules/form/components/field-error";
 import { A, useLocation } from "@solidjs/router";
 import {
   Accessor,

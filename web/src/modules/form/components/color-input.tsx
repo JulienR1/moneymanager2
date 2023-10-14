@@ -1,6 +1,5 @@
 import { Color } from "@modules/categories/schemas";
 import { Component, createSignal } from "solid-js";
-import { safeParse } from "valibot";
 import Input, { InputProps } from "./input";
 
 type ColorInputProps = InputProps;
@@ -9,8 +8,8 @@ const ColorInput: Component<ColorInputProps> = (props) => {
   const [color, setColor] = createSignal<Color>("#000000");
 
   function onColor(e: InputEvent & { currentTarget: HTMLInputElement }) {
-    const result = safeParse(Color, e.currentTarget.value);
-    setColor(result.success ? result.output : "#000000");
+    const result = Color.safeParse(e.currentTarget.value);
+    setColor(result.success ? result.data : "#000000");
   }
 
   return (

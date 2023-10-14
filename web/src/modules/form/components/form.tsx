@@ -7,16 +7,16 @@ import {
   splitProps,
   useContext,
 } from "solid-js";
-import { BaseSchema, Output, SafeParseResult, safeParse } from "valibot";
+import z from "zod";
 import { getFormData } from "../utils";
 import FieldError from "./field-error";
 
-type Props<S extends BaseSchema> = Omit<
+type Props<S extends z.Schema> = Omit<
   JSX.HTMLAttributes<HTMLFormElement>,
   "onSubmit" | "onsubmit"
 > & {
   schema: S;
-  onSubmit: (data: Output<S>) => void;
+  onSubmit: (data: z.infer<S>) => void;
 };
 
 // TODO: change keys for schema keys
@@ -24,6 +24,7 @@ type IFormContext = {
   issues: Accessor<Record<string, string[]>>;
   validateForm: () => unknown;
 };
+
 const FormContext = createContext<IFormContext>({
   issues: () => ({}),
   validateForm: () => {},
@@ -31,7 +32,7 @@ const FormContext = createContext<IFormContext>({
 
 export const useForm = () => useContext(FormContext);
 
-const Form = <S extends BaseSchema>(props: Props<S>) => {
+const Form = <S extends z.Schema>(props: Props<S>) => {
   const [local, others] = splitProps(props, ["schema"]);
   let formRef: HTMLFormElement;
 
@@ -42,12 +43,14 @@ const Form = <S extends BaseSchema>(props: Props<S>) => {
 
   function validateForm(): SafeParseResult<S> {
     const formData = getFormData(formRef);
-    const validationResult = safeParse(local.schema, formData);
+    const validationResult = local.schema.safeParse(formData) as ReturnType<
+      S["safeParse"]
+    >;
 
     const currentIssues: ReturnType<typeof issues> = {};
     if (!validationResult.success) {
-      for (const issue of validationResult.issues) {
-        const key = issue.path?.at(-1)?.key ?? "unknown";
+      for (const issue of validationResult.error.issues) {
+        const key = issue.path[0] ?? "unknown";
         currentIssues[key] ??= [];
         currentIssues[key].push(issue.message);
       }
@@ -63,7 +66,7 @@ const Form = <S extends BaseSchema>(props: Props<S>) => {
 
     const validationResult = validateForm();
     if (validationResult.success) {
-      others.onSubmit(validationResult.output);
+      others.onSubmit(validationResult.data);
       formRef.reset();
       setIsDirty(false);
     }

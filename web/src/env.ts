@@ -1,5 +1,5 @@
-import { object, string } from "valibot";
+import z from "zod";
 
-export const EnvSchema = object({
-  VITE_SERVER_URL: string(),
+export const EnvSchema = z.object({
+  VITE_SERVER_URL: z.string(),
 });
