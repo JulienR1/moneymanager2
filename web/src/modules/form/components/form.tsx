@@ -41,7 +41,7 @@ const Form = <S extends z.Schema>(props: Props<S>) => {
 
   createEffect(() => validateForm());
 
-  function validateForm(): SafeParseResult<S> {
+  function validateForm(): ReturnType<S["safeParse"]> {
     const formData = getFormData(formRef);
     const validationResult = local.schema.safeParse(formData) as ReturnType<
       S["safeParse"]
