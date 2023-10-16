@@ -52,7 +52,7 @@ export async function compressImage(
   });
 }
 
-export async function encodeImage(file: File): Promise<string> {
+export async function encodeFile(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 

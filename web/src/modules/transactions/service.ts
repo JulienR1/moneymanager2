@@ -1,5 +1,5 @@
 import request from "@modules/fetch/utils";
-import { compressImage, encodeImage } from "@modules/images/service";
+import { compressImage, encodeFile } from "@modules/files/service";
 import { cookToast } from "@modules/toasts/toast-factory";
 import { NewTransactionResultSchema, NewTransactionSchema } from "./schema";
 
@@ -18,8 +18,12 @@ export async function createTransaction(
 
   if (data.receipt) {
     try {
-      const compressedReceipt = await compressImage(data.receipt, 1_000_000);
-      payload.receipt = await encodeImage(compressedReceipt);
+      if (data.receipt.type === "application/pdf") {
+        payload.receipt = await encodeFile(data.receipt);
+      } else {
+        const compressedReceipt = await compressImage(data.receipt, 1_000_000);
+        payload.receipt = await encodeFile(compressedReceipt);
+      }
     } catch {
       cookToast("Échec de traitement", {
         description: "La facture n'a pas pu être traitée correctement",
