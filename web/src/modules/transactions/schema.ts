@@ -4,27 +4,27 @@ export const makeFileSchema = (params: {
   allowedTypes: [string, ...string[]];
   maxSize: number;
 }) =>
-  z.instanceof(File, { message: "Format invalide" }).and(
-    z.object({
-      lastModified: z.number(),
-      lastModifiedDate: z.date(),
-      name: z
-        .string({ invalid_type_error: "Format invalide" })
-        .min(1, { message: "Le fichier doit comporter un nom" }),
-      size: z
-        .number({ invalid_type_error: "Format invalide" })
-        .max(params.maxSize, {
-          message: "Le fichier saisi est trop volumineux",
-        }),
-      type: z.enum(params.allowedTypes, {
-        invalid_type_error: "Le type de fichier n'est pas supporté",
-      }),
-    }),
-  );
+  z
+    .instanceof(File, { message: "Format invalide" })
+    .refine((file) => file.name.length > 0, {
+      message: "Le fichier doit comporter un nom",
+    })
+    .refine((file) => file.size <= params.maxSize, {
+      message: "Le fichier saisi est trop volumineux",
+    })
+    .refine((file) => params.allowedTypes.includes(file.type), {
+      message: "Ce type de fichier n'est pas pris en charge",
+    })
+    .or(
+      z
+        .instanceof(File)
+        .transform((file) => (file.size > 0 ? file : null))
+        .refine((file) => file === null, { message: "Format invalide" }),
+    );
 
 export const ReceiptFile = makeFileSchema({
   allowedTypes: ["application/pdf", "image/png", "image/jpeg", "image/webp"],
-  maxSize: 1_000_000,
+  maxSize: 10_000_000,
 });
 
 export const NewTransactionSchema = z.object({
@@ -43,13 +43,7 @@ export const NewTransactionSchema = z.object({
         .number({ invalid_type_error: "Saisir un montant" })
         .min(0, { message: "Saisir une valeur positive" }),
     ),
-  receipt: z.union([
-    ReceiptFile,
-    z.object({
-      name: z.literal(""),
-      size: z.literal(0),
-    }),
-  ]),
+  receipt: ReceiptFile,
   date: z
     .string({ invalid_type_error: "Saisir une date" })
     .transform((str) => new Date(str)),

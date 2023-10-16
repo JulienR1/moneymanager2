@@ -1,3 +1,4 @@
+import { useForm } from "@modules/form/components/form";
 import { Component, JSX, createUniqueId } from "solid-js";
 
 type ToggleProps = Omit<
@@ -5,28 +6,31 @@ type ToggleProps = Omit<
   "oninput" | "onInput"
 > & {
   onToggle: (state: boolean) => void;
+  id: string;
   class?: string;
   color?: "red" | "green";
 };
 
 const Toggle: Component<ToggleProps> = (props) => {
-  const id = createUniqueId();
-  const name = `toggle-${id}`;
+  const { validateForm } = useForm();
+  const id = props.id + "-" + createUniqueId();
 
   const handleChange: JSX.ChangeEventHandlerUnion<HTMLInputElement, Event> = (
     e,
   ) => {
     props.onToggle(e.currentTarget.checked);
+    validateForm();
   };
 
   return (
     <div class={"w-fit " + props.class}>
-      <label id={name} class="hover:cursor-pointer">
+      <label id={id} class="hover:cursor-pointer">
         <input
-          id={name}
+          id={id}
           type="checkbox"
-          class="invisible absolute h-0 w-0 [&+div]:[--x-position:-50%] [&:checked+div]:[--x-position:50%]"
+          name={props.name}
           onchange={handleChange}
+          class="invisible absolute h-0 w-0 [&+div]:[--x-position:-50%] [&:checked+div]:[--x-position:50%]"
         />
         <div
           class="relative flex h-6 w-12 items-center justify-center rounded-xl border-2"

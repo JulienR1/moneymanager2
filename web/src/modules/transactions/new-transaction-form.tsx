@@ -20,6 +20,7 @@ import Card from "./components/card";
 import Category from "./components/category";
 import Toggle from "./components/toggle";
 import { NewTransactionSchema } from "./schema";
+import { createTransaction } from "./service";
 
 type TransactionType = "income" | "expense";
 
@@ -30,7 +31,10 @@ type NewTransactionProps = {
 
 const FormWrapper: Component<NewTransactionProps> = (props) => {
   return (
-    <Form schema={NewTransactionSchema} onSubmit={(s) => console.log(s)}>
+    <Form
+      schema={NewTransactionSchema}
+      onSubmit={(d) => createTransaction(d, props.dashboard().id)}
+    >
       <NewTransactionForm {...props} />
     </Form>
   );
@@ -52,18 +56,14 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
 
   createEffect(() => {
     const keys = Object.keys(issues());
-    if (keys.length > 0) {
-      if (
-        keys.some((k) =>
-          ["description", "amount", "receipt", "date"].includes(k),
-        )
-      ) {
-        generalAccordion.setIsOpened(true);
-      }
 
-      if (keys.includes("category")) {
-        categoriesAccordion.setIsOpened(true);
-      }
+    const generalInfoFields = ["description", "amount", "receipt", "date"];
+    if (keys.some((k) => generalInfoFields.includes(k))) {
+      generalAccordion.setIsOpened(true);
+    }
+
+    if (keys.includes("category")) {
+      categoriesAccordion.setIsOpened(true);
     }
   });
 
@@ -83,7 +83,8 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
           </div>
           <Toggle
             class="mx-auto"
-            name="transactionType"
+            name="isIncome"
+            id="expense-toggle"
             onToggle={toggleTransactionType}
           />
           <div>
@@ -211,7 +212,7 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
             Annuler
           </A>
           <Button type="submit" icon={{ name: "contract_edit" }}>
-            <span class="font-semibold"> Enregistrer</span>
+            <span class="font-semibold">Enregistrer</span>
           </Button>
         </div>
       </Card>
