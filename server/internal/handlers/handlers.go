@@ -20,11 +20,13 @@ func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
 
 	userRepository := repositories.MakeUserRepository(db)
 	iconRepository := repositories.MakeIconRepository(db)
+	fileRepository := repositories.MakeFileRepository(db)
 	dashboardRepository := repositories.MakeDashboardRepository(db)
 	categoryRepository := repositories.MakeCategoryRepository(db)
 
 	tokenService := services.MakeTokenService()
 	cookieService := services.MakeCookieService()
+	fileService := services.MakeFileService(&fileRepository)
 	authService := services.MakeAuthService(&tokenService, &userRepository)
 	userService := services.MakeUserService(&userRepository, &dashboardRepository, db)
 	categoryService := services.MakeCategoryService(&categoryRepository, &iconRepository)
