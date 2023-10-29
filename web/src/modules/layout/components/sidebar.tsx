@@ -1,3 +1,5 @@
+import LogoImg from "@/assets/logo3.png";
+
 import Icon, { IconProps } from "@modules/form/components/icon";
 import Backdrop from "./backdrop";
 
@@ -71,10 +73,7 @@ const Sidebar: Component<SidebarProps> = (props) => {
                 }}
               >
                 <figure>
-                  <img
-                    class="block aspect-square w-10"
-                    src="/src/assets/logo3.png"
-                  />
+                  <img class="block aspect-square w-10" src={LogoImg} />
                 </figure>
               </A>
 

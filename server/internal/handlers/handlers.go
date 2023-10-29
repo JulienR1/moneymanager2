@@ -42,26 +42,31 @@ func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
 
 	authMiddleware := makeAuthMiddleware(&authHandler, &userHandler)
 
-	app.Get("/", rootController)
+	app.Static("/", "./public")
 
-	auth := app.Group("/auth")
+	api := app.Group("/api")
+	api.Get("/", rootHandler)
+
+	auth := api.Group("/auth")
 	auth.Post("/login", authHandler.Login)
 	auth.Post("/logout", authHandler.Logout)
 	auth.Use(authMiddleware).Post("/refresh", authHandler.RefreshAccessToken)
 
-	app.Post("/register", userHandler.Register)
-	users := app.Group("/users").Use(authMiddleware)
+	api.Post("/register", userHandler.Register)
+	users := api.Group("/users").Use(authMiddleware)
 	users.Get("/:userId", userHandler.GetUser)
 
-	app.Use(authMiddleware).Get("/dashboards", dashboardHandler.GetAllDashboardsForUser)
-	app.Use(authMiddleware).Get("/dashboards/:dashboardId", dashboardHandler.GetDashboardForUser)
+	api.Use(authMiddleware).Get("/dashboards", dashboardHandler.GetAllDashboardsForUser)
+	api.Use(authMiddleware).Get("/dashboards/:dashboardId", dashboardHandler.GetDashboardForUser)
 
-	dashboardGroup := app.Group("/dashboards/:dashboardId").Use(authMiddleware)
+	dashboardGroup := api.Group("/dashboards/:dashboardId").Use(authMiddleware)
 	dashboardGroup.Post("/categories", categoryHandler.CreateCategory)
 	dashboardGroup.Post("/transactions", transactionHandler.CreateTransaction)
+
+	app.Static("/*", "./public/index.html")
 }
 
-func rootController(c *fiber.Ctx) error {
+func rootHandler(c *fiber.Ctx) error {
 	return c.SendString("Server is running")
 }
 
