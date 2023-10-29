@@ -5,7 +5,7 @@ import Form, { useForm } from "@modules/form/components/form";
 import Icon from "@modules/form/components/icon";
 import Input from "@modules/form/components/input";
 
-import { A, useLocation } from "@solidjs/router";
+import { A, useLocation, useNavigate } from "@solidjs/router";
 import {
   Accessor,
   Component,
@@ -30,10 +30,16 @@ type NewTransactionProps = {
 };
 
 const FormWrapper: Component<NewTransactionProps> = (props) => {
+  const navigate = useNavigate();
+
   return (
     <Form
       schema={NewTransactionSchema}
-      onSubmit={(d) => createTransaction(d, props.dashboard().id)}
+      onSubmit={(d) =>
+        createTransaction(d, props.dashboard().id, () =>
+          navigate(props.closeEndpoint),
+        )
+      }
     >
       <NewTransactionForm {...props} />
     </Form>

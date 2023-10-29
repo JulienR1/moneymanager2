@@ -6,6 +6,7 @@ import { NewTransactionResultSchema, NewTransactionSchema } from "./schema";
 export async function createTransaction(
   data: NewTransactionSchema,
   dashboardId: number,
+  onClose: Function,
 ) {
   const payload = {
     type: data.isIncome ? "income" : "expense",
@@ -42,4 +43,7 @@ export async function createTransaction(
     }).burnt();
     return;
   }
+
+  cookToast("Transaction sauvegardée").golden();
+  onClose();
 }
