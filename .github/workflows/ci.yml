@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check-web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+          cache: "npm"
+          cache-dependency-path: ./web/package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Test
+        run: npm run test
+      - name: Build
+        run: npm run build
+      - name: Save built app
+        uses: actions/upload-artifact@v3
+        with:
+          name: web
+          path: ./web/dist/
+          retention-days: 1
+          if-no-files-found: error
+
+  check-server:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v4
+        with:
+          go-version: "1.21.x"
+      - name: Vet
+        run: go vet ./...
+      - name: Test
+        run: go test ./...
+      - name: Build
+        run: go build ./cmd/server/main.go
+      - name: Save built ./server
+        uses: actions/upload-artifact@v3
+        with:
+          name: server
+          path: ./server/main
+          retention-days: 1
+          if-no-files-found: error
+
+  archive:
+    if: github.ref == 'refs/heads/master'
+    needs: [check-web, check-server]
+    runs-on: ubuntu-latest
+    steps:
+      - run: mkdir public
+      - uses: actions/download-artifact@v3
+        with:
+          name: web
+          path: ./public/
+      - uses: actions/download-artifact@v3
+        with:
+          name: server
+          path: .
+      - uses: actions/upload-artifact@v3
+        with:
+          name: moneymanager2
+          path: ./
