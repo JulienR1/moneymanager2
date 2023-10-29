@@ -15,7 +15,22 @@ func MakeCategoryService(r *repositories.CategoryRepository, iconRepository *rep
 	return CategoryService{repository: r, iconRepository: iconRepository}
 }
 
-func (service *CategoryService) GetAssociatedWithDashboard(dashboardId int) ([]dtos.CategoryDto, error) {
+func (service *CategoryService) GetAssociatedWithDashboardById(dashboardId, categoryId int) (*dtos.CategoryDto, error) {
+	categories, err := service.GetAllAssociatedWithDashboard(dashboardId)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, category := range categories {
+		if category.Id == categoryId {
+			return &category, nil
+		}
+	}
+
+	return nil, fmt.Errorf("could not find a category (id=%d) associated with the specified dashboard (id=%d)", categoryId, dashboardId)
+}
+
+func (service *CategoryService) GetAllAssociatedWithDashboard(dashboardId int) ([]dtos.CategoryDto, error) {
 	categories, err := service.repository.FindFromDashboardId(dashboardId)
 	if err != nil {
 		return []dtos.CategoryDto{}, fmt.Errorf("could not find categories associated with this dashboard (%d)", dashboardId)

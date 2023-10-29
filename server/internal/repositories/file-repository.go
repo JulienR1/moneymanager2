@@ -2,7 +2,6 @@ package repositories
 
 import (
 	repoutils "JulienR1/moneymanager2/server/internal/pkg/repo-utils"
-	"errors"
 )
 
 type FileRepository struct {
@@ -14,5 +13,12 @@ func MakeFileRepository(db *repoutils.Database) FileRepository {
 }
 
 func (repository *FileRepository) SaveFile(url string) (int, error) {
-	return 0, errors.New("not implemented")
+	var fileId int
+
+	query := "INSERT INTO remote_files (url) VALUES ($1) RETURNING id"
+	if err := repository.db.Connection.QueryRow(query, url).Scan(&fileId); err != nil {
+		return 0, err
+	}
+
+	return fileId, nil
 }

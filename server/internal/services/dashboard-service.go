@@ -41,6 +41,17 @@ func (service *DashboardService) GetById(dashboardId int) (*dtos.DashboardDto, e
 	return service.parseDashboard(record), nil
 }
 
+func (service *DashboardService) IsDashboardAssociatedWithUser(dashboardId, userId int) bool {
+	if dashboards, err := service.GetAllByUserId(userId); err == nil {
+		for _, dashboard := range dashboards {
+			if dashboard.Id == dashboardId {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func (service *DashboardService) parseDashboard(dashboard *repositories.DashboardRecord) *dtos.DashboardDto {
 	whiteSpaceRegex, _ := regexp.Compile(`\s+`)
 
@@ -48,7 +59,7 @@ func (service *DashboardService) parseDashboard(dashboard *repositories.Dashboar
 	key = strings.TrimSpace(key)
 	key = whiteSpaceRegex.ReplaceAllString(key, "-")
 
-	categories, _ := service.categoryService.GetAssociatedWithDashboard(dashboard.Id)
+	categories, _ := service.categoryService.GetAllAssociatedWithDashboard(dashboard.Id)
 
 	return &dtos.DashboardDto{
 		Id:           dashboard.Id,

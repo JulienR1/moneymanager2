@@ -1,2 +1,8 @@
 20230904_initial_tables.sql
 20230904_profiles.sql
+20230910_enabled_users.sql
+20230913_0_dashboard_defaults.sql
+20230913_1_associated_dashboards.sql
+20230917_categories_from_dashboards.sql
+20231029_0_files_table.sql
+20231029_1_nullable_receipts.sql

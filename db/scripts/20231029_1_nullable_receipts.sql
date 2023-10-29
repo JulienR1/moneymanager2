@@ -1,0 +1,1 @@
+ALTER TABLE transactions ALTER receipt_id DROP NOT NULL;

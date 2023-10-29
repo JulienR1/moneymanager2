@@ -23,6 +23,7 @@ func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
 	fileRepository := repositories.MakeFileRepository(db)
 	dashboardRepository := repositories.MakeDashboardRepository(db)
 	categoryRepository := repositories.MakeCategoryRepository(db)
+	transactionRepository := repositories.MakeTransactionRepository(db)
 
 	tokenService := services.MakeTokenService()
 	cookieService := services.MakeCookieService()
@@ -31,11 +32,13 @@ func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
 	userService := services.MakeUserService(&userRepository, &dashboardRepository, db)
 	categoryService := services.MakeCategoryService(&categoryRepository, &iconRepository)
 	dashboardService := services.MakeDashboardService(&dashboardRepository, &categoryService)
+	transactionService := services.MakeTransactionService(&transactionRepository)
 
 	userHandler := MakeUserHandler(validator, &userService)
 	categoryHandler := MakeCategoryHandler(validator, &categoryService, &dashboardService)
 	authHandler := MakeAuthHandler(validator, &authService, &tokenService, &cookieService)
 	dashboardHandler := MakeDashboardHandler(validator, &dashboardService, &userService)
+	transactionHandler := MakeTransactionHandler(validator, &transactionService, &fileService, &categoryService, &dashboardService)
 
 	authMiddleware := makeAuthMiddleware(&authHandler, &userHandler)
 
@@ -55,6 +58,7 @@ func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
 
 	dashboardGroup := app.Group("/dashboards/:dashboardId").Use(authMiddleware)
 	dashboardGroup.Post("/categories", categoryHandler.CreateCategory)
+	dashboardGroup.Post("/transactions", transactionHandler.CreateTransaction)
 }
 
 func rootController(c *fiber.Ctx) error {
@@ -69,7 +73,8 @@ func makeAuthMiddleware(authHandler *AuthHandler, userHandler *UserHandler) func
 			return false, keyauth.ErrMissingOrMalformedAPIKey
 		}
 
-		if user, err := userHandler.service.FindUserById(userId); user == nil || err != nil {
+		user, err := userHandler.service.FindUserById(userId)
+		if user == nil || err != nil {
 			return false, c.Status(http.StatusBadRequest).JSON(jsonutils.NewError(errors.New("invalid user")))
 		}
 
