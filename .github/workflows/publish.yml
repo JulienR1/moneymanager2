@@ -38,7 +38,7 @@ jobs:
             let fs = require('fs');
             fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/moneymanager2.zip`, Buffer.from(download.data));
       - run: |
-          rm main
+          rm -f main
           rm -rf public
       - run: unzip moneymanager2.zip
       - name: Commit changes
