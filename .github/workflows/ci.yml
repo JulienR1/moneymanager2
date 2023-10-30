@@ -75,3 +75,5 @@ jobs:
         with:
           name: moneymanager2
           path: ./
+          retention-days: 1
+          if-no-files-found: error

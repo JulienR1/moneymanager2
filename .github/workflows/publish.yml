@@ -33,6 +33,10 @@ jobs:
             fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/moneymanager2.zip`, Buffer.from(download.data));
       - run: unzip moneymanager2.zip
       - name: Commit changes
-        uses: EndBug/add-and-commit@v9
-        with:
-          push: origin releases --set-upstream --force
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "<>"
+          git checkout releases
+          git add .
+          git commit -m "Automatic release"
+          git push origin releases --force
