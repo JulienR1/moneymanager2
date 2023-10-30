@@ -47,7 +47,8 @@ async function makeRequest<S extends z.Schema>(
       params.body = JSON.stringify(args?.body ?? {});
     }
 
-    const response = await fetch(import.meta.env.VITE_SERVER_URL + url, params);
+    const server = import.meta.env.VITE_SERVER_URL ?? "/api";
+    const response = await fetch(server + url, params);
     const data = await response.json();
 
     return schema.safeParse(data) as ReturnType<S["safeParse"]>;
