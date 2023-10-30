@@ -40,7 +40,7 @@ jobs:
       - run: |
           rm main
           rm -rf public
-      - run: unzip -f moneymanager2.zip
+      - run: unzip moneymanager2.zip
       - name: Commit changes
         run: |
           git config --global user.name "GitHub Actions"
