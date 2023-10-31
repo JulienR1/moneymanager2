@@ -4,6 +4,7 @@ import (
 	"JulienR1/moneymanager2/server/internal/handlers"
 	repoutils "JulienR1/moneymanager2/server/internal/pkg/repo-utils"
 	"database/sql"
+	"fmt"
 	"log"
 	"os"
 
@@ -15,7 +16,7 @@ import (
 
 func main() {
 	if err := godotenv.Load(); err != nil {
-		log.Fatal("Could not load .env file")
+		fmt.Println("Could not load .env file")
 	}
 
 	db, err := sql.Open("postgres", os.Getenv("DATABASE_CONNECTION_STRING"))
