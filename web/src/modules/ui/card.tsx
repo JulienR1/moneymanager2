@@ -24,7 +24,7 @@ export const Card: Component<CardProps> = (props) => {
           </Show>
         </div>
       </Show>
-      <div class="p-4">{props.children}</div>
+      <div class="p-3 md:p-4">{props.children}</div>
     </div>
   );
 };

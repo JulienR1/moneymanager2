@@ -79,7 +79,7 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
         <div class="mx-auto grid w-fit grid-cols-3 items-center justify-center gap-2">
           <div class="ml-auto">
             <p
-              class="duration-250 after:duration-250 w-fit transition-all after:block after:h-1 after:w-full after:max-w-0 after:rounded-sm after:bg-primary after:transition-all"
+              class="duration-250 after:duration-250 w-fit text-sm transition-all after:block after:h-1 after:w-full after:max-w-0 after:rounded-sm after:bg-primary after:transition-all md:text-base"
               classList={{
                 "after:max-w-[200px]": transactionType() === "expense",
               }}
@@ -95,7 +95,7 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
           />
           <div>
             <p
-              class="duration-250 after:duration-250 w-fit transition-all after:block after:h-1 after:w-full after:max-w-0 after:rounded-sm after:bg-primary after:transition-all"
+              class="duration-250 after:duration-250 w-fit text-sm transition-all after:block after:h-1 after:w-full after:max-w-0 after:rounded-sm after:bg-primary after:transition-all md:text-base"
               classList={{
                 "after:max-w-[200px]": transactionType() === "income",
               }}
