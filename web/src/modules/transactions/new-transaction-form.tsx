@@ -17,6 +17,7 @@ import {
   createEffect,
   createSignal,
   createUniqueId,
+  onMount,
 } from "solid-js";
 import { Category } from "./components/category";
 import { NewTransactionSchema } from "./schema";
@@ -57,13 +58,13 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
     setTransactionType((t) => (t === "expense" ? "income" : "expense"));
   }
 
-  const generalAccordion = useAccordion();
-  const categoriesAccordion = useAccordion();
+  const generalAccordion = useAccordion(false);
+  const categoriesAccordion = useAccordion(false);
 
   createEffect(() => {
+    const generalInfoFields = ["description", "amount", "receipt", "date"];
     const keys = Object.keys(issues());
 
-    const generalInfoFields = ["description", "amount", "receipt", "date"];
     if (keys.some((k) => generalInfoFields.includes(k))) {
       generalAccordion.setIsOpened(true);
     }
@@ -71,6 +72,10 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
     if (keys.includes("category")) {
       categoriesAccordion.setIsOpened(true);
     }
+  });
+
+  onMount(() => {
+    setTimeout(() => generalAccordion.setIsOpened(true), 250);
   });
 
   return (
@@ -127,6 +132,7 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
             type="number"
             step="0.01"
             leftIcon={{ name: "payments" }}
+            onChange={() => categoriesAccordion.setIsOpened(true)}
           />
         </div>
 
@@ -178,7 +184,10 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
                       type="radio"
                       name="category"
                       value={category().id}
-                      onChange={validateForm}
+                      onChange={() => {
+                        validateForm();
+                        generalAccordion.setIsOpened(false);
+                      }}
                       class="invisible absolute h-0 [&:checked+label]:translate-x-2 [&:checked+label]:border-l-4 [&:checked+label]:opacity-100"
                     />
                     <label
