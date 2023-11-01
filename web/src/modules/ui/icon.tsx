@@ -7,6 +7,7 @@ export type IconProps = {
   class?: string;
   style?: JSX.CSSProperties | string;
   size?: FontSize;
+  mdSize?: FontSize;
   name: string;
   onClick?: (e: MouseEvent) => void;
 };
@@ -31,7 +32,9 @@ export const Icon: Component<IconProps> = (props) => {
       <span
         class={`material-symbols-outlined h-fit text-inherit text-${
           props.size ?? "xl"
-        } ${iconProps.class ?? ""}`}
+        } ${props.mdSize ? "md:text-" + props.mdSize ?? "xl" : ""} ${
+          iconProps.class ?? ""
+        }`}
         style={props.style}
       >
         {iconProps.name}

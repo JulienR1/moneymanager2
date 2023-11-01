@@ -36,6 +36,8 @@ export const Input: Component<InputProps> = (props) => {
           <Icon
             {...props.leftIcon!}
             class={"ml-2 " + props.leftIcon?.class ?? ""}
+            size="lg"
+            mdSize="xl"
           />
         </Show>
 
@@ -47,7 +49,7 @@ export const Input: Component<InputProps> = (props) => {
             {...props}
             id={id}
             onInput={handleInput}
-            class="w-full rounded-lg p-2 pt-0 text-sm font-semibold text-black focus-visible:outline-none"
+            class="w-full rounded-lg p-1 pt-0 text-xs font-semibold text-black focus-visible:outline-none md:p-2 md:text-sm"
           />
         </div>
 

@@ -12,7 +12,7 @@ export const Button: Component<ButtonProps> = (props) => {
       {...props}
       class={
         props.class +
-        " group flex items-center rounded-2xl bg-gradient-to-tr from-primary to-secondary px-5 py-1 text-sm text-white transition-transform hover:shadow-md"
+        " group flex items-center rounded-2xl bg-gradient-to-tr from-primary to-secondary px-3 py-1 text-xs text-white transition-transform hover:shadow-md md:px-5 md:text-sm"
       }
     >
       {props.children}
