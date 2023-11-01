@@ -7,7 +7,7 @@ type ShortRequestInit = Omit<RequestInit, "method" | "headers" | "body"> & {
 };
 type Methods = "get" | "put" | "post" | "delete";
 
-export default function request(
+export function request(
   url: string,
   args?: ShortRequestInit,
 ): Record<

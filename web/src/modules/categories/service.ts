@@ -1,5 +1,5 @@
-import request from "@modules/fetch/utils";
-import { cookToast } from "@modules/toasts/toast-factory";
+import { request } from "@modules/fetch";
+import { cookToast } from "@modules/toasts";
 import { CategorySchema, NewCategorySchema } from "./schemas";
 
 export async function createCategory(
