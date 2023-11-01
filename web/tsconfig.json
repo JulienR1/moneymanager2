@@ -12,6 +12,7 @@
     "noEmit": true,
     "isolatedModules": true,
     "baseUrl": ".",
+    "resolveJsonModule": true,
     "paths": {
       "@ui": ["./src/modules/ui/index.ts"],
       "@ui/*": ["./src/modules/ui", "./src/modules/ui/*"],

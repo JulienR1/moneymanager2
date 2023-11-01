@@ -3,6 +3,7 @@ import LogoImg from "@/assets/logo3.png";
 import { A } from "@solidjs/router";
 import { Backdrop, Icon, IconProps } from "@ui";
 import { Accessor, Component, Index, Show, createSignal } from "solid-js";
+import { Version } from "./version";
 
 export type SidebarLinkProps = {
   href: string;
@@ -181,6 +182,8 @@ export const Sidebar: Component<SidebarProps> = (props) => {
 
           <CloseButton onClose={props.onClose} />
         </div>
+
+        <Version />
       </aside>
     </>
   );
