@@ -6,10 +6,10 @@ type CategoryProps = CategorySchema;
 
 export const Category: Component<CategoryProps> = (props) => {
   return (
-    <div class="flex w-[180px] items-center justify-between rounded-md px-3 py-1 shadow-md">
-      <Icon name={props.icon} />
+    <div class="flex w-[120px] items-center justify-between rounded-md px-3 py-1 shadow-md md:w-[180px]">
+      <Icon name={props.icon} size="lg" mdSize="xl" />
       <p
-        class="overflow-hidden overflow-ellipsis whitespace-nowrap first-letter:capitalize"
+        class="overflow-hidden overflow-ellipsis whitespace-nowrap text-sm first-letter:capitalize md:text-base"
         style={{ width: "calc(100% - 36px)" }}
       >
         {props.label}

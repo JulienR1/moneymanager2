@@ -111,12 +111,12 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
         leftIcon={{ name: "settings" }}
         controls={generalAccordion}
       >
-        <div class="grid grid-cols-[auto_180px] gap-3">
+        <div class="grid grid-cols-[auto_150px] gap-3 md:grid-cols-[auto_180px]">
           <Input
             id="description"
-            label="Description"
+            label="Titre"
             name="description"
-            placeholder="Saisir une description"
+            placeholder="Saisir un titre"
             leftIcon={{ name: "signature" }}
           />
           <Input
@@ -130,7 +130,7 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
           />
         </div>
 
-        <div class="grid grid-cols-[auto_180px] gap-3">
+        <div class="grid grid-cols-[auto_150px] gap-3 md:grid-cols-[auto_180px]">
           <Input
             id="receipt"
             label="Facture"
@@ -198,7 +198,7 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
         <div class="pt-2">
           <A
             href={location.pathname.replace(/\/$/, "") + "/category"}
-            class="group ml-auto mt-2 flex w-fit items-center rounded-2xl bg-gradient-to-tr from-primary to-secondary px-5 py-1 text-sm text-white hover:shadow-md"
+            class="group ml-auto mt-2 flex w-fit items-center rounded-2xl bg-gradient-to-tr from-primary to-secondary px-3 py-1 text-xs text-white hover:shadow-md md:px-5 md:text-sm"
           >
             <span class="font-semibold">Ajouter</span>
             <Icon
