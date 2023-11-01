@@ -1,3 +1,4 @@
+import { config } from "@/env";
 import z from "zod";
 import { getAccessToken } from "./token";
 
@@ -47,7 +48,7 @@ async function makeRequest<S extends z.Schema>(
       params.body = JSON.stringify(args?.body ?? {});
     }
 
-    const response = await fetch(import.meta.env.VITE_SERVER_URL + url, params);
+    const response = await fetch(config.VITE_SERVER_URL + url, params);
     const data = await response.json();
 
     return schema.safeParse(data) as ReturnType<S["safeParse"]>;
