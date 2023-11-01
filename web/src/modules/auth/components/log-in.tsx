@@ -1,13 +1,9 @@
-import Button from "@modules/form/components/button";
-import Form from "@modules/form/components/form";
-import Input from "@modules/form/components/input";
-import PasswordInput from "@modules/form/components/password-input";
-
+import { Button, Form, Input, PasswordInput } from "@modules/form";
 import { useNavigate } from "@solidjs/router";
 import { LogInSchema } from "../schemas";
 import { login } from "../service";
 
-const LogInForm = () => {
+export const LogInForm = () => {
   const navigate = useNavigate();
 
   return (
@@ -33,5 +29,3 @@ const LogInForm = () => {
     </Form>
   );
 };
-
-export default LogInForm;

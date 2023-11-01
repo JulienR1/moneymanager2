@@ -1,5 +1,5 @@
 import { Component, createSignal, onCleanup, onMount } from "solid-js";
-import Card, { CardProps } from "./card";
+import { Card, CardProps } from "./card";
 
 type AccordionProps = Omit<CardProps, "rightIcon"> & {
   initial?: boolean;
@@ -12,7 +12,7 @@ export const useAccordion = (initial?: boolean) => {
   return { isOpened, setIsOpened, toggle };
 };
 
-const Accordion: Component<AccordionProps> = (props) => {
+export const Accordion: Component<AccordionProps> = (props) => {
   let containerRef: HTMLDivElement;
 
   const accordion = props.controls ?? useAccordion(props.initial);
@@ -48,5 +48,3 @@ const Accordion: Component<AccordionProps> = (props) => {
     </Card>
   );
 };
-
-export default Accordion;

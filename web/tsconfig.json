@@ -13,6 +13,8 @@
     "isolatedModules": true,
     "baseUrl": ".",
     "paths": {
+      "@ui": ["./src/modules/ui/index.ts"],
+      "@ui/*": ["./src/modules/ui", "./src/modules/ui/*"],
       "@modules/*": ["./src/modules/*"],
       "@/*": ["./src/*"]
     }

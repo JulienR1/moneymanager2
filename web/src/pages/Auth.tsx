@@ -1,7 +1,4 @@
-import LogInForm from "@modules/auth/components/log-in";
-import RegisterForm from "@modules/auth/components/register";
-import { logout } from "@modules/auth/service";
-
+import { LogInForm, RegisterForm, logout } from "@modules/auth";
 import { A, useLocation } from "@solidjs/router";
 import { Match, Switch, createEffect, createSignal } from "solid-js";
 

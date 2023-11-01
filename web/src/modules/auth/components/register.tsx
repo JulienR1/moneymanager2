@@ -1,14 +1,10 @@
-import Button from "@modules/form/components/button";
-import Form from "@modules/form/components/form";
-import Input from "@modules/form/components/input";
-import PasswordInput from "@modules/form/components/password-input";
-
+import { Button, Form, Input, PasswordInput } from "@modules/form";
 import { useNavigate } from "@solidjs/router";
 import { createSignal } from "solid-js";
 import { makeRegisterSchema } from "../schemas";
 import { register } from "../service";
 
-const RegisterForm = () => {
+export const RegisterForm = () => {
   const navigate = useNavigate();
   const [password, setPassword] = createSignal("");
   const validationSchema = () => makeRegisterSchema(password());

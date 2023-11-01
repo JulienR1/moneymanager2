@@ -3,7 +3,7 @@ import { useForm } from "./form";
 
 type Props = { name?: string };
 
-const FieldError: Component<Props> = (props) => {
+export const FieldError: Component<Props> = (props) => {
   let listRef: HTMLUListElement;
 
   const { issues } = useForm();
@@ -31,5 +31,3 @@ const FieldError: Component<Props> = (props) => {
     </Show>
   );
 };
-
-export default FieldError;

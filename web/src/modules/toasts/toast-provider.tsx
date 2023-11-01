@@ -7,7 +7,7 @@ const toastContainer = document.getElementById("toasts")!;
 
 const [toasts, setToasts] = createStore<ToastProps[]>([]);
 
-const ToastProvider = () => {
+export const ToastProvider = () => {
   function handleToastClose(toastId: number) {
     setToasts(() => toasts.filter((t) => t.id !== toastId));
   }
@@ -29,5 +29,4 @@ const ToastProvider = () => {
   );
 };
 
-export default ToastProvider;
 export { setToasts };

@@ -1,7 +1,7 @@
 import { Component, createSignal } from "solid-js";
-import Input, { InputProps } from "./input";
+import { Input, InputProps } from "./input";
 
-const PasswordInput: Component<InputProps> = (props) => {
+export const PasswordInput: Component<InputProps> = (props) => {
   const [showPassword, setShowPassword] = createSignal(false);
 
   const passwordInputType = () => (showPassword() ? "text" : "password");
@@ -19,5 +19,3 @@ const PasswordInput: Component<InputProps> = (props) => {
     />
   );
 };
-
-export default PasswordInput;

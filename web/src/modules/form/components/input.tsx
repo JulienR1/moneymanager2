@@ -1,7 +1,7 @@
+import { Icon, IconProps } from "@ui/icon";
 import { Component, JSX, Show, createUniqueId } from "solid-js";
-import FieldError from "./field-error";
+import { FieldError } from "./field-error";
 import { useForm } from "./form";
-import Icon, { IconProps } from "./icon";
 
 export type InputProps = Omit<
   JSX.InputHTMLAttributes<HTMLInputElement>,
@@ -14,7 +14,7 @@ export type InputProps = Omit<
   onInput?: JSX.InputEventHandler<HTMLInputElement, InputEvent>;
 };
 
-const Input: Component<InputProps> = (props) => {
+export const Input: Component<InputProps> = (props) => {
   const { validateForm } = useForm();
 
   const handleInput: JSX.InputEventHandler<HTMLInputElement, InputEvent> = (
@@ -63,5 +63,3 @@ const Input: Component<InputProps> = (props) => {
     </div>
   );
 };
-
-export default Input;

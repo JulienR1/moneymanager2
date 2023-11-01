@@ -1,11 +1,14 @@
 import { Dashboard } from "@/resources/schema";
-import Button from "@modules/form/components/button";
-import FieldError from "@modules/form/components/field-error";
-import Form, { useForm } from "@modules/form/components/form";
-import Icon from "@modules/form/components/icon";
-import Input from "@modules/form/components/input";
-
+import {
+  Button,
+  FieldError,
+  Form,
+  Input,
+  Toggle,
+  useForm,
+} from "@modules/form";
 import { A, useLocation, useNavigate } from "@solidjs/router";
+import { Accordion, Card, Icon, useAccordion } from "@ui";
 import {
   Accessor,
   Component,
@@ -15,10 +18,7 @@ import {
   createSignal,
   createUniqueId,
 } from "solid-js";
-import Accordion, { useAccordion } from "./components/accordion";
-import Card from "./components/card";
-import Category from "./components/category";
-import Toggle from "./components/toggle";
+import { Category } from "./components/category";
 import { NewTransactionSchema } from "./schema";
 import { createTransaction } from "./service";
 
@@ -226,4 +226,4 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
   );
 };
 
-export default FormWrapper;
+export { FormWrapper as NewTransactionForm };

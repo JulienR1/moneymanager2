@@ -1,7 +1,7 @@
 import { Accessor, Component, JSX, createSignal } from "solid-js";
-import Footer from "./components/footer";
-import Header from "./components/header";
-import Sidebar, { SidebarLinkProps } from "./components/sidebar";
+import { Footer } from "./components/footer";
+import { Header } from "./components/header";
+import { Sidebar, SidebarLinkProps } from "./components/sidebar";
 
 type LayoutProps = {
   links: Accessor<{
@@ -11,7 +11,7 @@ type LayoutProps = {
   children: JSX.Element;
 };
 
-const Layout: Component<LayoutProps> = (props) => {
+export const Layout: Component<LayoutProps> = (props) => {
   const [sidebarVisible, setSidebarVisible] = createSignal(false);
 
   const showSidebar = () => setSidebarVisible(true);
@@ -34,5 +34,3 @@ const Layout: Component<LayoutProps> = (props) => {
     </div>
   );
 };
-
-export default Layout;

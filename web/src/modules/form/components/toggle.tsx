@@ -11,7 +11,7 @@ type ToggleProps = Omit<
   color?: "red" | "green";
 };
 
-const Toggle: Component<ToggleProps> = (props) => {
+export const Toggle: Component<ToggleProps> = (props) => {
   const { validateForm } = useForm();
   const id = props.id + "-" + createUniqueId();
 
@@ -53,5 +53,3 @@ const Toggle: Component<ToggleProps> = (props) => {
     </div>
   );
 };
-
-export default Toggle;

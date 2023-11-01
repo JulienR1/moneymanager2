@@ -1,5 +1,5 @@
-import Icon, { IconProps } from "@modules/form/components/icon";
 import { Component, JSX, Show } from "solid-js";
+import { Icon, IconProps } from "./icon";
 
 export type CardProps = {
   title?: string;
@@ -8,7 +8,7 @@ export type CardProps = {
   children: JSX.Element;
 };
 
-const Card: Component<CardProps> = (props) => {
+export const Card: Component<CardProps> = (props) => {
   return (
     <div class="relative m-4 rounded-md bg-white shadow-md">
       <Show when={props.title}>
@@ -26,5 +26,3 @@ const Card: Component<CardProps> = (props) => {
     </div>
   );
 };
-
-export default Card;

@@ -9,7 +9,7 @@ import {
 } from "solid-js";
 import z from "zod";
 import { getFormData } from "../utils";
-import FieldError from "./field-error";
+import { FieldError } from "./field-error";
 
 type Props<S extends z.Schema> = Omit<
   JSX.HTMLAttributes<HTMLFormElement>,
@@ -32,7 +32,7 @@ const FormContext = createContext<IFormContext>({
 
 export const useForm = () => useContext(FormContext);
 
-const Form = <S extends z.Schema>(props: Props<S>) => {
+export const Form = <S extends z.Schema>(props: Props<S>) => {
   const [local, others] = splitProps(props, ["schema"]);
   let formRef: HTMLFormElement;
 
@@ -83,5 +83,3 @@ const Form = <S extends z.Schema>(props: Props<S>) => {
     </FormContext.Provider>
   );
 };
-
-export default Form;

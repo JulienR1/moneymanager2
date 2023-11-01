@@ -1,5 +1,8 @@
 import "./index.css";
 
+import { useAuth } from "@modules/auth";
+import { useDashboard } from "@modules/dashboards";
+import { Layout, makeSidebarLinks } from "@modules/layout";
 import { Navigate, Route, Routes, useNavigate } from "@solidjs/router";
 import {
   Accessor,
@@ -10,11 +13,6 @@ import {
   type Component,
 } from "solid-js";
 
-import { useAuth } from "@modules/auth/components/auth-provider";
-import Layout from "@modules/layout/layout";
-
-import { useDashboard } from "@modules/dashboards/dashboard-provider";
-import { makeSidebarLinks } from "@modules/layout/links";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";

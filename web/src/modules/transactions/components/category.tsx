@@ -1,10 +1,10 @@
 import { CategorySchema } from "@modules/categories/schemas";
-import Icon from "@modules/form/components/icon";
+import { Icon } from "@ui";
 import { Component } from "solid-js";
 
 type CategoryProps = CategorySchema;
 
-const Category: Component<CategoryProps> = (props) => {
+export const Category: Component<CategoryProps> = (props) => {
   return (
     <div class="flex w-[180px] items-center justify-between rounded-md px-3 py-1 shadow-md">
       <Icon name={props.icon} />
@@ -21,5 +21,3 @@ const Category: Component<CategoryProps> = (props) => {
     </div>
   );
 };
-
-export default Category;

@@ -6,7 +6,7 @@ type BackdropProps = {
   class?: string;
 };
 
-const Backdrop: Component<BackdropProps> = (props) => {
+export const Backdrop: Component<BackdropProps> = (props) => {
   function handleEscape(event: KeyboardEvent) {
     if (event.key === "Escape" && props.visible) {
       props.onClick?.();
@@ -28,5 +28,3 @@ const Backdrop: Component<BackdropProps> = (props) => {
     />
   );
 };
-
-export default Backdrop;

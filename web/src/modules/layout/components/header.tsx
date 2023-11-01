@@ -1,17 +1,14 @@
+import { logout, useAuth } from "@modules/auth";
+import { cookToast } from "@modules/toasts";
+import { Icon } from "@ui";
 import { Component, Show } from "solid-js";
-
-import { useAuth } from "@modules/auth/components/auth-provider";
-import { logout } from "@modules/auth/service";
-import Icon from "@modules/form/components/icon";
-import { cookToast } from "@modules/toasts/toast-factory";
-
-import Profile from "./profile";
+import { Profile } from "./profile";
 
 type HeaderProps = {
   onEnableSidebar?: () => void;
 };
 
-const Header: Component<HeaderProps> = (props) => {
+export const Header: Component<HeaderProps> = (props) => {
   const auth = useAuth();
 
   function handleLogout() {
@@ -43,5 +40,3 @@ const Header: Component<HeaderProps> = (props) => {
     </header>
   );
 };
-
-export default Header;

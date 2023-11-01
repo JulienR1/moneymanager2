@@ -4,7 +4,7 @@ type SkeletonProps = {
   type: "round";
 };
 
-const Skeleton: Component<SkeletonProps> = (props) => {
+export const Skeleton: Component<SkeletonProps> = (props) => {
   return (
     <div class="h-full w-full animate-pulse">
       <Switch>
@@ -15,5 +15,3 @@ const Skeleton: Component<SkeletonProps> = (props) => {
     </div>
   );
 };
-
-export default Skeleton;

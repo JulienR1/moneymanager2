@@ -1,8 +1,4 @@
-import Button from "@modules/form/components/button";
-import ColorInput from "@modules/form/components/color-input";
-import Form from "@modules/form/components/form";
-import Input from "@modules/form/components/input";
-
+import { Button, ColorInput, Form, Input } from "@modules/form";
 import { A, useNavigate } from "@solidjs/router";
 import { Component } from "solid-js";
 import { CategorySchema } from "./schemas";
@@ -14,7 +10,7 @@ type NewCategoryFormProps = {
   refreshDashboard: Function;
 };
 
-const NewCategoryForm: Component<NewCategoryFormProps> = (props) => {
+export const NewCategoryForm: Component<NewCategoryFormProps> = (props) => {
   const navigate = useNavigate();
 
   function closeForm() {
@@ -63,5 +59,3 @@ const NewCategoryForm: Component<NewCategoryFormProps> = (props) => {
     </Form>
   );
 };
-
-export default NewCategoryForm;

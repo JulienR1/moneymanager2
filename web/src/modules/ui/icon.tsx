@@ -23,7 +23,7 @@ const Parent: Component<
   );
 };
 
-const Icon: Component<IconProps> = (props) => {
+export const Icon: Component<IconProps> = (props) => {
   const [buttonProps, iconProps] = splitProps(props, ["onClick"]);
 
   return (
@@ -39,5 +39,3 @@ const Icon: Component<IconProps> = (props) => {
     </Parent>
   );
 };
-
-export default Icon;

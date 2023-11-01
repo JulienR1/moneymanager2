@@ -1,11 +1,11 @@
+import { Icon, IconProps } from "@ui";
 import { Component, JSX, Show } from "solid-js";
-import Icon, { IconProps } from "./icon";
 
 export type ButtonProps = JSX.ButtonHTMLAttributes<HTMLButtonElement> & {
   icon?: IconProps;
 };
 
-const Button: Component<ButtonProps> = (props) => {
+export const Button: Component<ButtonProps> = (props) => {
   return (
     <button
       type="submit"
@@ -29,5 +29,3 @@ const Button: Component<ButtonProps> = (props) => {
     </button>
   );
 };
-
-export default Button;
