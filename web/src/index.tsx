@@ -1,15 +1,14 @@
 /* @refresh reload */
 import { Router } from "@solidjs/router";
 import { render } from "solid-js/web";
-import { EnvSchema } from "./env";
+import "./env";
 
-import AuthProvider from "@modules/auth/components/auth-provider";
-import DashboardProvider from "@modules/dashboards/dashboard-provider";
-import ModalProvider from "@modules/modals/modal-provider";
-import ToastProvider from "@modules/toasts/toast-provider";
+import { AuthProvider } from "@modules/auth";
+import { DashboardProvider } from "@modules/dashboards";
+import { ModalProvider } from "@modules/modals";
+import { ToastProvider } from "@modules/toasts/toast-provider";
+
 import App from "./App";
-
-EnvSchema.parse(import.meta.env);
 
 const root = document.getElementById("root");
 render(

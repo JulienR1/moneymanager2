@@ -1,7 +1,7 @@
+import { Icon, IconProps } from "@ui/icon";
 import { Component, JSX, Show, createUniqueId } from "solid-js";
-import FieldError from "./field-error";
+import { FieldError } from "./field-error";
 import { useForm } from "./form";
-import Icon, { IconProps } from "./icon";
 
 export type InputProps = Omit<
   JSX.InputHTMLAttributes<HTMLInputElement>,
@@ -14,7 +14,7 @@ export type InputProps = Omit<
   onInput?: JSX.InputEventHandler<HTMLInputElement, InputEvent>;
 };
 
-const Input: Component<InputProps> = (props) => {
+export const Input: Component<InputProps> = (props) => {
   const { validateForm } = useForm();
 
   const handleInput: JSX.InputEventHandler<HTMLInputElement, InputEvent> = (
@@ -36,6 +36,8 @@ const Input: Component<InputProps> = (props) => {
           <Icon
             {...props.leftIcon!}
             class={"ml-2 " + props.leftIcon?.class ?? ""}
+            size="lg"
+            mdSize="xl"
           />
         </Show>
 
@@ -47,7 +49,7 @@ const Input: Component<InputProps> = (props) => {
             {...props}
             id={id}
             onInput={handleInput}
-            class="w-full rounded-lg p-2 pt-0 text-sm font-semibold text-black focus-visible:outline-none"
+            class="w-full rounded-lg p-1 pt-0 text-xs font-semibold text-black focus-visible:outline-none md:p-2 md:text-sm"
           />
         </div>
 
@@ -63,5 +65,3 @@ const Input: Component<InputProps> = (props) => {
     </div>
   );
 };
-
-export default Input;

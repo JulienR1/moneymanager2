@@ -1,10 +1,10 @@
 import { Color } from "@modules/categories/schemas";
 import { Component, createSignal } from "solid-js";
-import Input, { InputProps } from "./input";
+import { Input, InputProps } from "./input";
 
 type ColorInputProps = InputProps;
 
-const ColorInput: Component<ColorInputProps> = (props) => {
+export const ColorInput: Component<ColorInputProps> = (props) => {
   const [color, setColor] = createSignal<Color>("#000000");
 
   function onColor(e: InputEvent & { currentTarget: HTMLInputElement }) {
@@ -24,5 +24,3 @@ const ColorInput: Component<ColorInputProps> = (props) => {
     />
   );
 };
-
-export default ColorInput;

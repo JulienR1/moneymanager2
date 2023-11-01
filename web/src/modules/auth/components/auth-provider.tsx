@@ -29,7 +29,7 @@ const AuthContext = createContext<AuthContext>({
 
 export const useAuth = () => useContext(AuthContext);
 
-const AuthProvider: Component<{ children: JSX.Element }> = (props) => {
+export const AuthProvider: Component<{ children: JSX.Element }> = (props) => {
   onMount(initializeTokenRefresh);
 
   const [authenticatedUser] = createResource(
@@ -51,5 +51,3 @@ const AuthProvider: Component<{ children: JSX.Element }> = (props) => {
     </AuthContext.Provider>
   );
 };
-
-export default AuthProvider;

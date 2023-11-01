@@ -1,3 +1,4 @@
+import { config } from "@/env";
 import z from "zod";
 import { getAccessToken } from "./token";
 
@@ -6,7 +7,7 @@ type ShortRequestInit = Omit<RequestInit, "method" | "headers" | "body"> & {
 };
 type Methods = "get" | "put" | "post" | "delete";
 
-export default function request(
+export function request(
   url: string,
   args?: ShortRequestInit,
 ): Record<
@@ -47,8 +48,7 @@ async function makeRequest<S extends z.Schema>(
       params.body = JSON.stringify(args?.body ?? {});
     }
 
-    const server = import.meta.env.VITE_SERVER_URL ?? "/api";
-    const response = await fetch(server + url, params);
+    const response = await fetch(config.VITE_SERVER_URL + url, params);
     const data = await response.json();
 
     return schema.safeParse(data) as ReturnType<S["safeParse"]>;

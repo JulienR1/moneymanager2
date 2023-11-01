@@ -30,7 +30,7 @@ type DashboardProviderProps = {
   children: JSX.Element;
 };
 
-const DashboardProvider: Component<DashboardProviderProps> = (props) => {
+export const DashboardProvider: Component<DashboardProviderProps> = (props) => {
   const auth = useAuth();
   const [selectedDashboardId, setSelectedDashboardId] = createSignal<
     number | null
@@ -91,5 +91,3 @@ const DashboardProvider: Component<DashboardProviderProps> = (props) => {
 };
 
 export const useDashboard = () => useContext(DashboardContext);
-
-export default DashboardProvider;

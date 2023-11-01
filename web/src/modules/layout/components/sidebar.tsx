@@ -1,10 +1,9 @@
 import LogoImg from "@/assets/logo3.png";
 
-import Icon, { IconProps } from "@modules/form/components/icon";
-import Backdrop from "./backdrop";
-
 import { A } from "@solidjs/router";
+import { Backdrop, Icon, IconProps } from "@ui";
 import { Accessor, Component, Index, Show, createSignal } from "solid-js";
+import { Version } from "./version";
 
 export type SidebarLinkProps = {
   href: string;
@@ -33,7 +32,7 @@ const CloseButton: Component<Pick<SidebarProps, "onClose">> = (props) => {
   );
 };
 
-const Sidebar: Component<SidebarProps> = (props) => {
+export const Sidebar: Component<SidebarProps> = (props) => {
   const [compact, setCompact] = createSignal(false);
 
   const toggleCompact = () => setCompact((c) => !c);
@@ -183,9 +182,9 @@ const Sidebar: Component<SidebarProps> = (props) => {
 
           <CloseButton onClose={props.onClose} />
         </div>
+
+        <Version />
       </aside>
     </>
   );
 };
-
-export default Sidebar;

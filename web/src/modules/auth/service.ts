@@ -2,10 +2,10 @@ import {
   decodeToken,
   getAccessToken,
   removeAccessToken,
+  request,
   storeAccessToken,
-} from "@modules/fetch/token";
-import request from "@modules/fetch/utils";
-import { cookToast } from "@modules/toasts/toast-factory";
+} from "@modules/fetch";
+import { cookToast } from "@modules/toasts";
 import { Navigator } from "@solidjs/router";
 import { createSignal } from "solid-js";
 import {

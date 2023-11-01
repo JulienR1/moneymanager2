@@ -1,6 +1,6 @@
-import request from "@modules/fetch/utils";
-import { compressImage, encodeFile } from "@modules/files/service";
-import { cookToast } from "@modules/toasts/toast-factory";
+import { request } from "@modules/fetch";
+import { compressImage, encodeFile } from "@modules/files";
+import { cookToast } from "@modules/toasts";
 import { NewTransactionResultSchema, NewTransactionSchema } from "./schema";
 
 export async function createTransaction(

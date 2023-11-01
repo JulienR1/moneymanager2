@@ -1,7 +1,7 @@
-import request from "@modules/fetch/utils";
-import { cookToast } from "@modules/toasts/toast-factory";
+import { Dashboard } from "@/resources/schema";
+import { request } from "@modules/fetch";
+import { cookToast } from "@modules/toasts";
 import z from "zod";
-import { Dashboard } from "../../resources/schema";
 
 export async function fetchUserDashboards(
   userId: number,

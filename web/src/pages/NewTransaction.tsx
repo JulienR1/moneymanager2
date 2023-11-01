@@ -1,9 +1,7 @@
-import NewCategoryForm from "@modules/categories/new-category-form";
-import { useDashboard } from "@modules/dashboards/dashboard-provider";
-import { fetchUserDashboardById } from "@modules/dashboards/service";
-import Modal from "@modules/modals/modal";
-import NewTransactionForm from "@modules/transactions/new-transaction-form";
-
+import { NewCategoryForm } from "@modules/categories";
+import { fetchUserDashboardById, useDashboard } from "@modules/dashboards";
+import { Modal } from "@modules/modals";
+import { NewTransactionForm } from "@modules/transactions";
 import { useLocation, useNavigate } from "@solidjs/router";
 import { Component, Show } from "solid-js";
 

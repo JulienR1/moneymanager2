@@ -1,4 +1,4 @@
-import { IconProps } from "@modules/form/components/icon";
+import { IconProps } from "@ui";
 import { ToastColor, ToastProps } from "./toast";
 import { setToasts } from "./toast-provider";
 

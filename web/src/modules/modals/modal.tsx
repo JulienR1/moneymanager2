@@ -1,6 +1,4 @@
-import Backdrop from "@modules/layout/components/backdrop";
-import Card, { CardProps } from "@modules/transactions/components/card";
-
+import { Backdrop, Card, CardProps } from "@ui";
 import { Component, JSX, onCleanup, onMount } from "solid-js";
 import { useModal } from "./modal-provider";
 
@@ -11,7 +9,7 @@ type ModalProps = {
   children: JSX.Element;
 };
 
-const Modal: Component<ModalProps> = (props) => {
+export const Modal: Component<ModalProps> = (props) => {
   let removeModal: Function | null = null;
   const registerModal = useModal();
 
@@ -36,5 +34,3 @@ const Modal: Component<ModalProps> = (props) => {
 
   return <></>;
 };
-
-export default Modal;

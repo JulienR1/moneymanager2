@@ -1,12 +1,12 @@
-import { UserSchema } from "@modules/auth/schemas";
+import { UserSchema } from "@modules/auth";
+import { Skeleton } from "@ui";
 import { Component, Resource, Show, Suspense } from "solid-js";
-import Skeleton from "./skeleton";
 
 type ProfileProps = {
   user: Resource<UserSchema | null>;
 };
 
-const Profile: Component<ProfileProps> = (props) => {
+export const Profile: Component<ProfileProps> = (props) => {
   function initials() {
     const user = props.user();
     return (user ? user.firstname[0] + user.lastname[0] : "").toUpperCase();
@@ -33,5 +33,3 @@ const Profile: Component<ProfileProps> = (props) => {
     </div>
   );
 };
-
-export default Profile;

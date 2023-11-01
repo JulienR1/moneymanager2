@@ -22,7 +22,7 @@ type ModalProviderProps = {
 let modalId = 0;
 const modalContainer = document.getElementById("modals")!;
 
-const ModalProvider: Component<ModalProviderProps> = (props) => {
+export const ModalProvider: Component<ModalProviderProps> = (props) => {
   const [modals, setModals] = createSignal<
     Array<{ id: number; component: ValidComponent }>
   >([]);
@@ -53,4 +53,3 @@ const ModalProvider: Component<ModalProviderProps> = (props) => {
 };
 
 export const useModal = () => useContext(ModalContext);
-export default ModalProvider;

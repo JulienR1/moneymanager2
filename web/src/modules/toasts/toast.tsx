@@ -1,4 +1,4 @@
-import Icon, { IconProps } from "@modules/form/components/icon";
+import { Icon, IconProps } from "@ui";
 import { Component, Show, createSignal, onCleanup, onMount } from "solid-js";
 
 export type ToastColor = "primary" | "red" | "yellow";

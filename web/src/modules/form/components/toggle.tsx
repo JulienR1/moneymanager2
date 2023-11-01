@@ -11,7 +11,7 @@ type ToggleProps = Omit<
   color?: "red" | "green";
 };
 
-const Toggle: Component<ToggleProps> = (props) => {
+export const Toggle: Component<ToggleProps> = (props) => {
   const { validateForm } = useForm();
   const id = props.id + "-" + createUniqueId();
 
@@ -33,7 +33,7 @@ const Toggle: Component<ToggleProps> = (props) => {
           class="invisible absolute h-0 w-0 [&+div]:[--x-position:-50%] [&:checked+div]:[--x-position:50%]"
         />
         <div
-          class="relative flex h-6 w-12 items-center justify-center rounded-xl border-2"
+          class="relative flex h-5 w-10 items-center justify-center rounded-xl border-2 md:h-6 md:w-12"
           classList={{
             "border-primary": !props.color,
             "border-red-500": props.color === "red",
@@ -53,5 +53,3 @@ const Toggle: Component<ToggleProps> = (props) => {
     </div>
   );
 };
-
-export default Toggle;
