@@ -1,5 +1,11 @@
+import { TeammatesPanel } from "@modules/dashboards/panels";
+
 const Dashboard = () => {
-  return <>dashboard</>;
+  return (
+    <>
+      <TeammatesPanel />
+    </>
+  );
 };
 
 export default Dashboard;
