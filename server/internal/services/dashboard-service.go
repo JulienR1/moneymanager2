@@ -13,10 +13,11 @@ import (
 type DashboardService struct {
 	repository      *repositories.DashboardRepository
 	categoryService *CategoryService
+	userService     *UserService
 }
 
-func MakeDashboardService(r *repositories.DashboardRepository, categoryService *CategoryService) DashboardService {
-	return DashboardService{repository: r, categoryService: categoryService}
+func MakeDashboardService(r *repositories.DashboardRepository, categoryService *CategoryService, userService *UserService) DashboardService {
+	return DashboardService{repository: r, categoryService: categoryService, userService: userService}
 }
 
 func (service *DashboardService) GetAllByUserId(userId int) ([]dtos.DashboardDto, error) {
@@ -42,14 +43,38 @@ func (service *DashboardService) GetById(dashboardId int) (*dtos.DashboardDto, e
 }
 
 func (service *DashboardService) IsDashboardAssociatedWithUser(dashboardId, userId int) bool {
-	if dashboards, err := service.GetAllByUserId(userId); err == nil {
-		for _, dashboard := range dashboards {
-			if dashboard.Id == dashboardId {
+	if associatedUserIds, err := service.repository.FindAssociatedUsers(dashboardId); err == nil {
+		for _, associatedUserId := range associatedUserIds {
+			if associatedUserId == userId {
 				return true
 			}
 		}
 	}
 	return false
+}
+
+func (service *DashboardService) GetAssociatedUsers(dashboardId int) ([]dtos.TeammateDto, error) {
+	userIds, err := service.repository.FindAssociatedUsers(dashboardId)
+	if err != nil {
+		return nil, fmt.Errorf("could not find associated users for dashboard (id = %d)", dashboardId)
+	}
+
+	result := make([]dtos.TeammateDto, len(userIds))
+	for index, userId := range userIds {
+		user, err := service.userService.FindUserById(userId)
+		if err != nil {
+			return nil, err
+		}
+
+		result[index] = dtos.TeammateDto{
+			Id:         userId,
+			Firstname:  user.Firstname,
+			Lastname:   user.Lastname,
+			PictureUrl: user.PictureUrl,
+		}
+	}
+
+	return result, nil
 }
 
 func (service *DashboardService) parseDashboard(dashboard *repositories.DashboardRecord) *dtos.DashboardDto {

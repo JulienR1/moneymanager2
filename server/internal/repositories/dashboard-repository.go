@@ -63,6 +63,24 @@ func (repo *DashboardRepository) AddDashboard(label string, creatorId int) (int,
 }
 
 func (repo *DashboardRepository) AssignDashboardToUser(dashboardId, userId int) error {
-	_, err := repo.db.Connection.Query("INSERT INTO user_to_dashboard (user_id, dashboard_id) VALUES ($1, $2)", userId, dashboardId)
+	_, err := repo.db.Connection.Exec("INSERT INTO user_to_dashboard (user_id, dashboard_id) VALUES ($1, $2)", userId, dashboardId)
 	return err
+}
+
+func (repo *DashboardRepository) FindAssociatedUsers(dashboardId int) ([]int, error) {
+	rows, err := repo.db.Connection.Query("SELECT user_id FROM user_to_dashboard WHERE dashboard_id = $1", dashboardId)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+	var result []int
+
+	for rows.Next() {
+		var userId int
+		rows.Scan(&userId)
+		result = append(result, userId)
+	}
+
+	return result, nil
 }
