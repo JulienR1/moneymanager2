@@ -20,6 +20,26 @@ func MakeDashboardHandler(v *validator.Validate, s *services.DashboardService, u
 	return DashboardHandler{validate: v, service: s, userService: userService}
 }
 
+func (handler *DashboardHandler) GetUsers(c *fiber.Ctx) error {
+	dashboardIdStr := c.Params("dashboardId")
+	dashboardId, err := strconv.Atoi(dashboardIdStr)
+	if err != nil {
+		return c.SendStatus(http.StatusBadRequest)
+	}
+
+	userId := c.Locals("userId").(int)
+	if !handler.service.IsDashboardAssociatedWithUser(dashboardId, userId) {
+		return c.SendStatus(http.StatusUnauthorized)
+	}
+
+	users, err := handler.service.GetAssociatedUsers(dashboardId)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(jsonutils.NewError(err))
+	}
+
+	return c.Status(http.StatusOK).JSON(users)
+}
+
 func (handler *DashboardHandler) GetAllDashboardsForUser(c *fiber.Ctx) error {
 	userId := c.Locals("userId").(int)
 	dashboards, err := handler.service.GetAllByUserId(userId)

@@ -9,3 +9,10 @@ type DashboardDto struct {
 	CreationDate time.Time     `json:"creationDate"`
 	Categories   []CategoryDto `json:"categories"`
 }
+
+type TeammateDto struct {
+	Id         int     `json:"id"`
+	Firstname  string  `json:"firstname"`
+	Lastname   string  `json:"lastname"`
+	PictureUrl *string `json:"pictureUrl"`
+}
