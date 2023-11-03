@@ -7,6 +7,10 @@ export async function fetchTeammates([userId, dashboardId]: [
   number,
   number,
 ]): Promise<TeammateSchema[]> {
+  if (userId < 0 || dashboardId < 0) {
+    return [];
+  }
+
   const teammates = await request(`/dashboards/${dashboardId}/users`).get(
     z.array(TeammateSchema),
   );
