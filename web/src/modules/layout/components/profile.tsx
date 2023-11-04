@@ -1,9 +1,11 @@
 import { UserSchema } from "@modules/auth";
 import { Skeleton } from "@ui";
-import { Component, Resource, Show, Suspense } from "solid-js";
+import { Accessor, Component, Resource, Show, Suspense } from "solid-js";
+
+type User = Omit<UserSchema, "username"> | null;
 
 type ProfileProps = {
-  user: Resource<UserSchema | null>;
+  user: Resource<User> | Accessor<User>;
 };
 
 export const Profile: Component<ProfileProps> = (props) => {

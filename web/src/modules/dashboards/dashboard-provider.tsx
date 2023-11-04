@@ -1,7 +1,6 @@
 import { Dashboard } from "@/resources/schema";
 import { useAuth } from "@modules/auth/components/auth-provider";
-
-import { useBeforeLeave } from "@solidjs/router";
+import { useBeforeLeave, useLocation } from "@solidjs/router";
 import {
   Accessor,
   Component,
@@ -31,6 +30,8 @@ type DashboardProviderProps = {
 };
 
 export const DashboardProvider: Component<DashboardProviderProps> = (props) => {
+  const location = useLocation();
+
   const auth = useAuth();
   const [selectedDashboardId, setSelectedDashboardId] = createSignal<
     number | null
@@ -63,7 +64,12 @@ export const DashboardProvider: Component<DashboardProviderProps> = (props) => {
 
   createEffect(() => {
     if (selectedDashboardId() === null) {
-      const selection = dashboards().find((d) => d.key === "personal");
+      const knownDashboards = dashboards();
+      const [_, dashboardKey] = location.pathname.split("/");
+
+      const selection =
+        knownDashboards.find((d) => d.key === dashboardKey) ??
+        knownDashboards.find((d) => d.key === "personal");
       setSelectedDashboardId(selection?.id ?? null);
     }
   });

@@ -1,6 +1,8 @@
 package repositories
 
-import repoutils "JulienR1/moneymanager2/server/internal/pkg/repo-utils"
+import (
+	repoutils "JulienR1/moneymanager2/server/internal/pkg/repo-utils"
+)
 
 type CategoryRepository struct {
 	db *repoutils.Database
@@ -45,7 +47,7 @@ func (repo *CategoryRepository) CreateCategory(label, color string, iconId, dash
 		}
 
 		query = "INSERT INTO dashboard_categories (category_id, dashboard_id) VALUES ($1, $2)"
-		if _, err := repo.db.Connection.Query(query, categoryId, dashboardId); err != nil {
+		if _, err := repo.db.Connection.Exec(query, categoryId, dashboardId); err != nil {
 			return 0, err
 		}
 
