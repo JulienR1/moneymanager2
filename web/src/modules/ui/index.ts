@@ -3,3 +3,4 @@ export * from "./backdrop";
 export * from "./card";
 export * from "./icon";
 export * from "./skeleton";
+export * from "./table";
