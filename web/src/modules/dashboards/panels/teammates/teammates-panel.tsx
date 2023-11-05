@@ -1,7 +1,7 @@
 import { useAuth } from "@modules/auth";
 import { useDashboard } from "@modules/dashboards";
 import { Profile } from "@modules/layout";
-import { Card } from "@ui";
+import { Card, NoContent, Skeleton } from "@ui";
 import { Component, Index, Show, Suspense, createResource } from "solid-js";
 import { fetchTeammates } from "./service";
 
@@ -25,21 +25,17 @@ export const TeammatesPanel: Component<TeammatesPanelProps> = (props) => {
 
   return (
     <Card title="Équipe">
-      <Suspense fallback={<p>loading</p>}>
+      <Suspense fallback={<Skeleton type="line" />}>
         <Show
           when={!isPersonalDashboard()}
           fallback={
-            <p class="text-xs opacity-75 md:text-sm">
-              Ce tableau de bord est seulement le vôtre.
-            </p>
+            <NoContent message="Ce tableau de bord est seulement le vôtre." />
           }
         >
           <Show
             when={(teammates() ?? []).length > 0}
             fallback={
-              <p class="text-xs opacity-75 md:text-sm">
-                Aucune autre personne ayant accès à ce tableau de bord
-              </p>
+              <NoContent message="Aucune autre personne ayant accès à ce tableau de bord" />
             }
           >
             <ul>
