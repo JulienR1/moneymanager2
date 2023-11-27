@@ -1,7 +1,12 @@
+import { CategorySchema } from "@modules/categories";
 import { request } from "@modules/fetch";
 import { compressImage, encodeFile } from "@modules/files";
 import { cookToast } from "@modules/toasts";
-import { NewTransactionResultSchema, NewTransactionSchema } from "./schema";
+import {
+  NewTransactionResultSchema,
+  NewTransactionSchema,
+  TransactionSchema,
+} from "./schema";
 
 export async function createTransaction(
   data: NewTransactionSchema,
@@ -46,4 +51,25 @@ export async function createTransaction(
 
   cookToast("Transaction sauvegardée").golden();
   onClose();
+}
+
+export type Period = { start: Date; end: Date };
+export async function fetchTransactions(params: {
+  dashboardId: number;
+  period?: Period;
+}): Promise<TransactionSchema[]> {
+  if (params.dashboardId < 0) {
+    return [];
+  }
+
+  // TODO
+  const category: CategorySchema = {
+    color: "#ff0000",
+    icon: "bolt",
+    label: "Maison",
+  };
+  return [
+  ];
+
+  // return [];
 }

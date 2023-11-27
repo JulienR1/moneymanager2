@@ -1,3 +1,5 @@
+import { CategorySchema } from "@modules/categories";
+import { TeammateSchema } from "@modules/dashboards/panels";
 import { z } from "zod";
 
 export const makeFileSchema = (params: {
@@ -60,7 +62,18 @@ export const NewTransactionResultSchema = z.object({
   id: z.number(),
 });
 
+export const TransactionSchema = z.object({
+  id: z.number(),
+  label: z.string(),
+  amount: z.number(),
+  user: TeammateSchema,
+  category: CategorySchema,
+  receiptUrl: z.nullable(z.string()),
+  timestamp: z.string().transform((str) => new Date(str)),
+});
+
 export type NewTransactionSchema = z.infer<typeof NewTransactionSchema>;
 export type NewTransactionResultSchema = z.infer<
   typeof NewTransactionResultSchema
 >;
+export type TransactionSchema = z.infer<typeof TransactionSchema>;
