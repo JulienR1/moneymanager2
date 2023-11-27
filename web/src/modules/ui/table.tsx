@@ -10,9 +10,11 @@ import {
   useContext,
 } from "solid-js";
 
-type TableProps = {
-  header: string[];
+type TableProps<T extends readonly string[]> = {
+  header: T;
   widths?: string[];
+  // TODO: implement the sorting mechanics
+  sorters?: Partial<Record<T[number], (a: string, b: string) => -1 | 0 | 1>>;
   children: JSX.Element;
 };
 
@@ -24,7 +26,7 @@ type TableRowProps = {
 
 const TableContext = createContext<Record<string, string>>({});
 
-export const Table: Component<TableProps> = (props) => {
+export const Table = <T extends readonly string[]>(props: TableProps<T>) => {
   const columns = props.widths ?? [];
   const style = { display: "grid", "grid-template-columns": columns.join(" ") };
 
@@ -32,7 +34,7 @@ export const Table: Component<TableProps> = (props) => {
     <div>
       <div
         style={style}
-        class="relative mb-3 pb-2 after:absolute after:bottom-0 after:left-1/2 after:block after:h-[2px] after:w-11/12 after:-translate-x-1/2 after:rounded-sm after:bg-primary after:opacity-40"
+        class="relative mb-1 pb-2 after:absolute after:bottom-0 after:left-1/2 after:block after:h-[2px] after:w-11/12 after:-translate-x-1/2 after:rounded-sm after:bg-primary after:opacity-40"
       >
         <For each={props.header}>
           {(header) => (
@@ -59,7 +61,7 @@ export const TableRow: Component<TableRowProps> = (props) => {
           class="absolute top-0 block h-full w-full rounded opacity-20 group-hocus:hidden"
           classList={{ "bg-secondary": highlight }}
         />
-        <div style={style} class="text-center text-xs md:text-sm">
+        <div style={style} class="items-center text-center text-xs md:text-sm">
           {props.children}
         </div>
       </>
