@@ -3,6 +3,7 @@ import "./index.css";
 import { useAuth } from "@modules/auth";
 import { useDashboard } from "@modules/dashboards";
 import { Layout, makeSidebarLinks } from "@modules/layout";
+import { DetailedTransaction } from "@modules/transactions";
 import { Navigate, Route, Routes, useNavigate } from "@solidjs/router";
 import {
   Accessor,
@@ -59,6 +60,10 @@ const Navigation: Component<{ connected: Accessor<boolean> }> = (props) => {
             <Route path="/:dashboardKey" component={Dashboard} />
             <Route path="/:dashboardKey">
               <Route path="/new/*" component={NewTransaction} />
+              <Route
+                path="/transactions/:transactionId"
+                component={DetailedTransaction}
+              />
             </Route>
           </Match>
         </Switch>

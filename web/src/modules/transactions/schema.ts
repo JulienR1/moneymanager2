@@ -68,7 +68,12 @@ export const TransactionSchema = z.object({
   amount: z.number(),
   user: TeammateSchema,
   category: CategorySchema,
-  receiptUrl: z.nullable(z.string()),
+  receipt: z.nullable(
+    z.object({
+      url: z.string(),
+      mime: z.string(),
+    }),
+  ),
   timestamp: z.string().transform((str) => new Date(str)),
 });
 
