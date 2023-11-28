@@ -1,5 +1,5 @@
 import { A, useLocation, useParams } from "@solidjs/router";
-import { Accordion, Card, Icon, NoContent, Skeleton } from "@ui";
+import { Accordion, Card, Icon, NoContent, Skeleton, useAccordion } from "@ui";
 import {
   Component,
   Show,
@@ -23,7 +23,9 @@ export const DetailedTransaction: Component<DetailedTransactionProps> = (
     fetchTransaction,
   );
 
-  // let receiptCardRef: HTMLDivElement | undefined = undefined;
+  const generalAccordionControls = useAccordion();
+  const receiptAccordionControls = useAccordion(false);
+
   const [receiptCardRef, setReceiptCardRef] = createSignal<HTMLDivElement>();
   const [receiptWidth, setReceiptWidth] = createSignal(0);
 
@@ -40,6 +42,12 @@ export const DetailedTransaction: Component<DetailedTransactionProps> = (
       return () => {
         observer.unobserve(ref);
       };
+    }
+  });
+
+  createEffect(() => {
+    if (!generalAccordionControls.isOpened()) {
+      receiptAccordionControls.setIsOpened(true);
     }
   });
 
@@ -64,14 +72,17 @@ export const DetailedTransaction: Component<DetailedTransactionProps> = (
         <Accordion
           title={transaction()!.label}
           leftIcon={{ name: "show_chart" }}
+          controls={generalAccordionControls}
         >
-          <pre class="text-xs">{JSON.stringify(transaction(), null, 2)}</pre>
+          <div class="max-w-[430px] overflow-hidden lg:max-w-[800px]">
+            <pre class="text-xs">{JSON.stringify(transaction(), null, 2)}</pre>
+          </div>
         </Accordion>
 
         <Accordion
           title="Reçu"
-          ref={setReceiptCardRef}
           leftIcon={{ name: "receipt_long" }}
+          controls={receiptAccordionControls}
         >
           <Show
             when={transaction()!.receipt}
@@ -79,36 +90,41 @@ export const DetailedTransaction: Component<DetailedTransactionProps> = (
               <NoContent message="Aucun reçu n'est associé à cette transaction" />
             }
           >
-            <A href={transaction()!.receipt!.url!} target="_blank">
-              <Show
-                when={transaction()!.receipt!.mime === "application/pdf"}
-                fallback={
-                  <img
-                    class="mx-auto"
-                    src={transaction()!.receipt!.url}
-                    alt={transaction()!.label}
-                  />
-                }
-              >
+            <div
+              class="relative mx-auto block max-w-[430px] overflow-hidden md:bg-red-500 lg:max-w-[800px]"
+              ref={setReceiptCardRef}
+            >
+              <A href={transaction()!.receipt!.url!} target="_blank">
                 <Show
-                  when={navigator.pdfViewerEnabled}
+                  when={transaction()!.receipt!.mime === "application/pdf"}
                   fallback={
-                    <div class="flex items-center gap-2">
-                      <Icon name="open_in_new" size="sm" />
-                      <NoContent message="Votre navigateur ne prend pas en charge ce format de fichier." />
-                    </div>
+                    <img
+                      class="mx-auto"
+                      src={transaction()!.receipt!.url}
+                      alt={transaction()!.label}
+                    />
                   }
                 >
-                  <embed
-                    class="block"
-                    type={transaction()!.receipt!.mime}
-                    src={transaction()!.receipt!.url}
-                    width={receiptWidth()}
-                    height={receiptWidth()}
-                  />
+                  <Show
+                    when={navigator.pdfViewerEnabled}
+                    fallback={
+                      <div class="flex items-center gap-2">
+                        <Icon name="open_in_new" size="sm" />
+                        <NoContent message="Votre navigateur ne prend pas en charge ce format de fichier." />
+                      </div>
+                    }
+                  >
+                    <embed
+                      class="block w-full"
+                      type={transaction()!.receipt!.mime}
+                      src={transaction()!.receipt!.url}
+                      width={receiptWidth()}
+                      height={1.2 * receiptWidth()}
+                    />
+                  </Show>
                 </Show>
-              </Show>
-            </A>
+              </A>
+            </div>
           </Show>
         </Accordion>
 
