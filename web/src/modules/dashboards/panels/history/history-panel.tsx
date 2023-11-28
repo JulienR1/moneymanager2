@@ -24,6 +24,8 @@ export const HistoryPanel: Component<HistoryPanelProps> = (props) => {
     { initialValue: [] },
   );
 
+  const currentLocation = location.pathname.replace(/\/$/, "");
+
   return (
     <Card title="Transactions">
       <Suspense fallback={<Skeleton type="line" />}>
@@ -40,7 +42,7 @@ export const HistoryPanel: Component<HistoryPanelProps> = (props) => {
                 <TableRow
                   index={index}
                   anchor={{
-                    href: `${location.pathname}/transactions/${transaction.id}`,
+                    href: `${currentLocation}/transactions/${transaction.id}`,
                   }}
                 >
                   <p>{dateFormatter.format(transaction.timestamp)}</p>
