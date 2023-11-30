@@ -1,5 +1,14 @@
+import { dateFormatter, moneyFormatter } from "@/resources/formatters";
 import { A, useLocation, useParams } from "@solidjs/router";
-import { Accordion, Card, Icon, NoContent, Skeleton, useAccordion } from "@ui";
+import {
+  Accordion,
+  Card,
+  Details,
+  Icon,
+  NoContent,
+  Skeleton,
+  useAccordion,
+} from "@ui";
 import {
   Component,
   Show,
@@ -51,7 +60,42 @@ export const DetailedTransaction: Component<DetailedTransactionProps> = (
     }
   });
 
-  const dashboardLocation = location.pathname.replace(/transactions\/\d+/, "");
+  const dashboardLocation = location.pathname
+    .replace(/transactions\/\d+/, "")
+    .replace(/\/$/, "");
+
+  const transactionDetails = () => {
+    const t = transaction();
+    if (!t) {
+      return {};
+    }
+
+    return {
+      Montant: moneyFormatter.format(t.amount),
+      Catégorie: () => (
+        <span class="flex items-center gap-1">
+          {t.category.label}
+          <span style={{ color: t.category.color }}>
+            <Icon name={t.category.icon} size="base" />
+          </span>
+        </span>
+      ),
+      Date: dateFormatter.format(t.timestamp),
+      Coupable: t.user.firstname + " " + t.user.lastname,
+    };
+  };
+
+  const transactionLinks = () => {
+    const t = transaction();
+    if (!t) {
+      return {};
+    }
+
+    return {
+      Catégorie: `${dashboardLocation}/categories/${t.category.id}`,
+      Coupable: `${dashboardLocation}/profiles/${t.user.id}`,
+    };
+  };
 
   return (
     <Suspense
@@ -75,7 +119,7 @@ export const DetailedTransaction: Component<DetailedTransactionProps> = (
           controls={generalAccordionControls}
         >
           <div class="max-w-[430px] overflow-hidden lg:max-w-[800px]">
-            <pre class="text-xs">{JSON.stringify(transaction(), null, 2)}</pre>
+            <Details data={transactionDetails()} links={transactionLinks()} />
           </div>
         </Accordion>
 

@@ -1,16 +1,11 @@
-import { useDashboard } from "@modules/dashboards/dashboard-provider";
+import { dateFormatter, moneyFormatter } from "@/resources/formatters";
+import { useDashboard } from "@modules/dashboards";
 import { fetchTransactions } from "@modules/transactions";
 import { useLocation } from "@solidjs/router";
 import { Card, Icon, NoContent, Skeleton, Table, TableRow } from "@ui";
 import { Component, For, Show, Suspense, createResource } from "solid-js";
 
 type HistoryPanelProps = {};
-
-const dateFormatter = new Intl.DateTimeFormat("fr-CA", {});
-const moneyFormatter = new Intl.NumberFormat("fr-CA", {
-  style: "currency",
-  currency: "CAD",
-});
 
 export const HistoryPanel: Component<HistoryPanelProps> = (props) => {
   const location = useLocation();
