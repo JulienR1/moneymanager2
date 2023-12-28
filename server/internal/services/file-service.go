@@ -1,10 +1,12 @@
 package services
 
 import (
+	"JulienR1/moneymanager2/server/internal/dtos"
 	datauri "JulienR1/moneymanager2/server/internal/pkg/data-uri"
 	"JulienR1/moneymanager2/server/internal/repositories"
 	"bytes"
 	"errors"
+	"fmt"
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -44,7 +46,7 @@ func (service *FileService) StoreFile(uri *datauri.DataURI) (int, error) {
 		return 0, errors.New("could not upload file")
 	}
 
-	id, err := service.repository.SaveFile(result.Location)
+	id, err := service.repository.SaveFile(result.Location, uri.MimeType)
 	if err != nil {
 		svc := s3.New(session)
 		svc.DeleteObject(&s3.DeleteObjectInput{Bucket: bucket, Key: key})
@@ -52,4 +54,17 @@ func (service *FileService) StoreFile(uri *datauri.DataURI) (int, error) {
 	}
 
 	return id, nil
+}
+
+func (service *FileService) FetchFile(fileId int) (*dtos.FileDto, error) {
+	file, err := service.repository.FindFileById(fileId)
+	if err != nil {
+		return nil, fmt.Errorf("could not find file (id = %d)", fileId)
+	}
+
+	return &dtos.FileDto{
+		Id:   file.Id,
+		Url:  file.Url,
+		Mime: file.Mime,
+	}, nil
 }

@@ -1,24 +1,8 @@
 import { Dashboard } from "@/resources/schema";
-import {
-  Button,
-  FieldError,
-  Form,
-  Input,
-  Toggle,
-  useForm,
-} from "@modules/form";
+import { Button, FieldError, Form, Input, Toggle, useForm } from "@modules/form";
 import { A, useLocation, useNavigate } from "@solidjs/router";
 import { Accordion, Card, Icon, useAccordion } from "@ui";
-import {
-  Accessor,
-  Component,
-  Index,
-  Show,
-  createEffect,
-  createSignal,
-  createUniqueId,
-  onMount,
-} from "solid-js";
+import { Accessor, Component, Index, Show, createEffect, createSignal, createUniqueId, onMount } from "solid-js";
 import { Category } from "./components/category";
 import { NewTransactionSchema } from "./schema";
 import { createTransaction } from "./service";
@@ -36,11 +20,7 @@ const FormWrapper: Component<NewTransactionProps> = (props) => {
   return (
     <Form
       schema={NewTransactionSchema}
-      onSubmit={(d) =>
-        createTransaction(d, props.dashboard().id, () =>
-          navigate(props.closeEndpoint),
-        )
-      }
+      onSubmit={(d) => createTransaction(d, props.dashboard().id, () => navigate(props.closeEndpoint))}
     >
       <NewTransactionForm {...props} />
     </Form>
@@ -51,8 +31,7 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
   const { issues } = useForm();
   const location = useLocation();
 
-  const [transactionType, setTransactionType] =
-    createSignal<TransactionType>("expense");
+  const [transactionType, setTransactionType] = createSignal<TransactionType>("expense");
 
   function toggleTransactionType() {
     setTransactionType((t) => (t === "expense" ? "income" : "expense"));
@@ -92,12 +71,7 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
               Dépense
             </p>
           </div>
-          <Toggle
-            class="mx-auto"
-            name="isIncome"
-            id="expense-toggle"
-            onToggle={toggleTransactionType}
-          />
+          <Toggle class="mx-auto" name="isIncome" id="expense-toggle" onToggle={toggleTransactionType} />
           <div>
             <p
               class="duration-250 after:duration-250 w-fit text-sm transition-all after:block after:h-1 after:w-full after:max-w-0 after:rounded-sm after:bg-primary after:transition-all md:text-base"
@@ -111,11 +85,7 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
         </div>
       </Card>
 
-      <Accordion
-        title="Informations générales"
-        leftIcon={{ name: "settings" }}
-        controls={generalAccordion}
-      >
+      <Accordion title="Informations générales" leftIcon={{ name: "settings" }} controls={generalAccordion}>
         <div class="grid grid-cols-[auto_150px] gap-3 md:grid-cols-[auto_180px]">
           <Input
             id="description"
@@ -158,18 +128,10 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
         </div>
       </Accordion>
 
-      <Accordion
-        title="Catégories"
-        leftIcon={{ name: "category" }}
-        controls={categoriesAccordion}
-      >
+      <Accordion title="Catégories" leftIcon={{ name: "category" }} controls={categoriesAccordion}>
         <Show
           when={props.dashboard().categories.length > 0}
-          fallback={
-            <p class="opacity-70">
-              Aucune catégorie n'est associée au tableau de bord.
-            </p>
-          }
+          fallback={<p class="opacity-70">Aucune catégorie n'est associée au tableau de bord.</p>}
         >
           <ul class="flex flex-wrap justify-center gap-x-4 gap-y-2">
             <Index each={props.dashboard().categories}>
@@ -210,20 +172,14 @@ const NewTransactionForm: Component<NewTransactionProps> = (props) => {
             class="group ml-auto mt-2 flex w-fit items-center rounded-2xl bg-gradient-to-tr from-primary to-secondary px-3 py-1 text-xs text-white hover:shadow-md md:px-5 md:text-sm"
           >
             <span class="font-semibold">Ajouter</span>
-            <Icon
-              name="add"
-              class="pl-2 transition-transform group-hover:translate-x-2"
-            />
+            <Icon name="add" class="pl-2 transition-transform group-hover:translate-x-2" />
           </A>
         </div>
       </Accordion>
 
       <Card>
         <div class="flex items-center justify-evenly">
-          <A
-            href={props.closeEndpoint}
-            class="ml-2 block w-fit text-sm text-red-500 underline"
-          >
+          <A href={props.closeEndpoint} class="ml-2 block w-fit text-sm text-red-500 underline">
             Annuler
           </A>
           <Button type="submit" icon={{ name: "contract_edit" }}>

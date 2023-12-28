@@ -1,34 +1,22 @@
 import { dateFormatter, moneyFormatter } from "@/resources/formatters";
+import { useDashboard } from "@modules/dashboards";
 import { A, useLocation, useParams } from "@solidjs/router";
-import {
-  Accordion,
-  Card,
-  Details,
-  Icon,
-  NoContent,
-  Skeleton,
-  useAccordion,
-} from "@ui";
-import {
-  Component,
-  Show,
-  Suspense,
-  createEffect,
-  createResource,
-  createSignal,
-} from "solid-js";
+import { Accordion, Card, Details, Icon, NoContent, Skeleton, useAccordion } from "@ui";
+import { Component, Show, Suspense, createEffect, createResource, createSignal } from "solid-js";
 import { fetchTransaction } from "./service";
 
 type DetailedTransactionProps = {};
 
-export const DetailedTransaction: Component<DetailedTransactionProps> = (
-  props,
-) => {
+export const DetailedTransaction: Component<DetailedTransactionProps> = (props) => {
   const location = useLocation();
+  const dashboard = useDashboard();
   const params = useParams<{ dashboardKey: string; transactionId: string }>();
 
   const [transaction] = createResource(
-    () => parseInt(params.transactionId),
+    () => ({
+      dashboardId: dashboard.selectedDashboard()?.id ?? -1,
+      transactionId: parseInt(params.transactionId),
+    }),
     fetchTransaction,
   );
 
@@ -60,9 +48,7 @@ export const DetailedTransaction: Component<DetailedTransactionProps> = (
     }
   });
 
-  const dashboardLocation = location.pathname
-    .replace(/transactions\/\d+/, "")
-    .replace(/\/$/, "");
+  const dashboardLocation = location.pathname.replace(/transactions\/\d+/, "").replace(/\/$/, "");
 
   const transactionDetails = () => {
     const t = transaction();
@@ -113,26 +99,16 @@ export const DetailedTransaction: Component<DetailedTransactionProps> = (
           </Card>
         }
       >
-        <Accordion
-          title={transaction()!.label}
-          leftIcon={{ name: "show_chart" }}
-          controls={generalAccordionControls}
-        >
+        <Accordion title={transaction()!.label} leftIcon={{ name: "show_chart" }} controls={generalAccordionControls}>
           <div class="max-w-[430px] overflow-hidden lg:max-w-[800px]">
             <Details data={transactionDetails()} links={transactionLinks()} />
           </div>
         </Accordion>
 
-        <Accordion
-          title="Reçu"
-          leftIcon={{ name: "receipt_long" }}
-          controls={receiptAccordionControls}
-        >
+        <Accordion title="Reçu" leftIcon={{ name: "receipt_long" }} controls={receiptAccordionControls}>
           <Show
             when={transaction()!.receipt}
-            fallback={
-              <NoContent message="Aucun reçu n'est associé à cette transaction" />
-            }
+            fallback={<NoContent message="Aucun reçu n'est associé à cette transaction" />}
           >
             <div
               class="relative mx-auto block max-w-[430px] overflow-hidden md:bg-red-500 lg:max-w-[800px]"
@@ -141,13 +117,7 @@ export const DetailedTransaction: Component<DetailedTransactionProps> = (
               <A href={transaction()!.receipt!.url!} target="_blank">
                 <Show
                   when={transaction()!.receipt!.mime === "application/pdf"}
-                  fallback={
-                    <img
-                      class="mx-auto"
-                      src={transaction()!.receipt!.url}
-                      alt={transaction()!.label}
-                    />
-                  }
+                  fallback={<img class="mx-auto" src={transaction()!.receipt!.url} alt={transaction()!.label} />}
                 >
                   <Show
                     when={navigator.pdfViewerEnabled}
@@ -172,10 +142,7 @@ export const DetailedTransaction: Component<DetailedTransactionProps> = (
           </Show>
         </Accordion>
 
-        <A
-          href={dashboardLocation}
-          class="mx-auto mt-2 block w-fit text-xs text-primary underline md:text-sm"
-        >
+        <A href={dashboardLocation} class="mx-auto mt-2 block w-fit text-xs text-primary underline md:text-sm">
           Retour au tableau de bord
         </A>
       </Show>

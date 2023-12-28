@@ -95,3 +95,23 @@ func (handler *TransactionHandler) CreateTransaction(c *fiber.Ctx) error {
 func (handler *TransactionHandler) CreateRefund(c *fiber.Ctx) error {
 	return c.SendStatus(http.StatusNotImplemented)
 }
+
+func (handler *TransactionHandler) GetTransactions(c *fiber.Ctx) error {
+	dashboardIdStr := c.Params("dashboardId")
+	dashboardId, err := strconv.Atoi(dashboardIdStr)
+	if err != nil {
+		return c.SendStatus(http.StatusBadRequest)
+	}
+
+	transactions, err := handler.service.FetchTransactions(dashboardId)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(jsonutils.NewError(err))
+	}
+
+	return c.Status(http.StatusOK).JSON(transactions)
+}
+
+func (handler *TransactionHandler) GetTransaction(c *fiber.Ctx) error {
+	// TODO
+	return nil
+}

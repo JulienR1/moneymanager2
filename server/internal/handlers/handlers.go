@@ -32,7 +32,7 @@ func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
 	userService := services.MakeUserService(&userRepository, &dashboardRepository, db)
 	categoryService := services.MakeCategoryService(&categoryRepository, &iconRepository)
 	dashboardService := services.MakeDashboardService(&dashboardRepository, &categoryService, &userService)
-	transactionService := services.MakeTransactionService(&transactionRepository)
+	transactionService := services.MakeTransactionService(&transactionRepository, &userService, &fileService, &categoryService)
 
 	userHandler := MakeUserHandler(validator, &userService)
 	categoryHandler := MakeCategoryHandler(validator, &categoryService, &dashboardService)
@@ -62,7 +62,9 @@ func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
 	dashboardGroup := api.Group("/dashboards/:dashboardId").Use(authMiddleware)
 	dashboardGroup.Get("/users", dashboardHandler.GetUsers)
 	dashboardGroup.Post("/categories", categoryHandler.CreateCategory)
+	dashboardGroup.Get("/transactions", transactionHandler.GetTransactions)
 	dashboardGroup.Post("/transactions", transactionHandler.CreateTransaction)
+	dashboardGroup.Get("/transactions/:transactionId", transactionHandler.GetTransaction)
 
 	app.Static("/*", "./public/index.html")
 }

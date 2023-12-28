@@ -1,18 +1,10 @@
-import { CategorySchema } from "@modules/categories";
 import { request } from "@modules/fetch";
 import { compressImage, encodeFile } from "@modules/files";
 import { cookToast } from "@modules/toasts";
-import {
-  NewTransactionResultSchema,
-  NewTransactionSchema,
-  TransactionSchema,
-} from "./schema";
+import { z } from "zod";
+import { NewTransactionResultSchema, NewTransactionSchema, TransactionSchema } from "./schema";
 
-export async function createTransaction(
-  data: NewTransactionSchema,
-  dashboardId: number,
-  onClose: Function,
-) {
+export async function createTransaction(data: NewTransactionSchema, dashboardId: number, onClose: Function) {
   const payload = {
     type: data.isIncome ? "income" : "expense",
     label: data.description,
@@ -62,14 +54,36 @@ export async function fetchTransactions(params: {
     return [];
   }
 
-  // TODO
-  const category: CategorySchema = {
-    color: "#ff0000",
-    icon: "bolt",
-    label: "Maison",
-  };
-  return [
-  ];
+  const response = await request(`/dashboards/${params.dashboardId}/transactions`).get(z.array(TransactionSchema));
+  if (!response.success) {
+    cookToast("Impossible de charger les transactions").burnt();
+    return [];
+  }
 
-  // return [];
+  if (response.data.length === 0) {
+    cookToast("Aucune transaction", {
+      description: "Ce tableau de bord ne contient pas de transactions",
+    }).dry();
+  }
+
+  return response.data;
+}
+
+export async function fetchTransaction(params: {
+  dashboardId: number;
+  transactionId: number;
+}): Promise<TransactionSchema | null> {
+  if (params.transactionId < 0) {
+    return null;
+  }
+
+  const response = await request(`/dashboards/${params.dashboardId}/transactions/${params.transactionId}`).get(
+    TransactionSchema,
+  );
+  if (!response.success) {
+    cookToast("Transaction invalide").burnt();
+    return null;
+  }
+
+  return response.data;
 }
