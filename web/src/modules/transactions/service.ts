@@ -73,7 +73,7 @@ export async function fetchTransaction(params: {
   dashboardId: number;
   transactionId: number;
 }): Promise<TransactionSchema | null> {
-  if (params.transactionId < 0) {
+  if (params.dashboardId < 0 || params.transactionId < 0) {
     return null;
   }
 
