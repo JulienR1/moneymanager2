@@ -2,17 +2,13 @@ package handlers
 
 import (
 	"JulienR1/moneymanager2/server/internal/middlewares"
-	jsonutils "JulienR1/moneymanager2/server/internal/pkg/json-utils"
 	repoutils "JulienR1/moneymanager2/server/internal/pkg/repo-utils"
 	"JulienR1/moneymanager2/server/internal/repositories"
 	"JulienR1/moneymanager2/server/internal/services"
 	"JulienR1/moneymanager2/server/internal/validators"
-	"errors"
-	"net/http"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/keyauth"
 )
 
 func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
@@ -41,7 +37,7 @@ func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
 	dashboardHandler := MakeDashboardHandler(validator, &dashboardService, &userService)
 	transactionHandler := MakeTransactionHandler(validator, &transactionService, &fileService, &categoryService, &dashboardService)
 
-	authMiddleware := makeAuthMiddleware(&authHandler, &userHandler)
+	authMiddleware := middlewares.MakeAuthMiddleware(&authService, &userService)
 	dashboardMiddleware := middlewares.MakeDashboardMiddleware(&dashboardService)
 
 	app.Static("/", "./public")
@@ -75,27 +71,4 @@ func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
 
 func rootHandler(c *fiber.Ctx) error {
 	return c.SendString("Server is running")
-}
-
-func makeAuthMiddleware(authHandler *AuthHandler, userHandler *UserHandler) func(*fiber.Ctx) error {
-	validateAuth := func(c *fiber.Ctx, key string) (bool, error) {
-		userId, err := authHandler.service.Authenticate(key[7:]) // [7:] --> Remove "Bearer "
-
-		if err != nil {
-			return false, keyauth.ErrMissingOrMalformedAPIKey
-		}
-
-		user, err := userHandler.service.FindUserById(userId)
-		if user == nil || err != nil {
-			return false, c.Status(http.StatusBadRequest).JSON(jsonutils.NewError(errors.New("invalid user")))
-		}
-
-		c.Locals("userId", userId)
-		return true, nil
-	}
-
-	return keyauth.New(keyauth.Config{
-		KeyLookup: "header:Authorization",
-		Validator: validateAuth,
-	})
 }
