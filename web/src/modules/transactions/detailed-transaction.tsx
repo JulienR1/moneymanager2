@@ -1,17 +1,20 @@
 import { dateFormatter, moneyFormatter } from "@/resources/formatters";
 import { useDashboard } from "@modules/dashboards";
 import { A, useLocation, useParams } from "@solidjs/router";
-import { Accordion, Card, Details, Icon, NoContent, Skeleton, useAccordion } from "@ui";
-import { Component, Show, Suspense, createEffect, createResource, createSignal, onMount } from "solid-js";
+import { Accordion, Card, Details, Icon, NoContent, OptionalSuspense, Skeleton, useAccordion } from "@ui";
+import { Component, Show, createEffect, createResource, createSignal } from "solid-js";
+import { TransactionSchema } from "./schema";
 import { fetchTransaction } from "./service";
 
 type DetailedTransactionProps = {};
 
 export const DetailedTransaction: Component<DetailedTransactionProps> = (props) => {
-  const location = useLocation();
   const dashboard = useDashboard();
+  const location = useLocation<TransactionSchema>();
   const params = useParams<{ dashboardKey: string; transactionId: string }>();
-  const [pageLoaded, setPageLoaded] = createSignal(false);
+
+  const initialTransactionResult = TransactionSchema.nullable().safeParse(location.state || null);
+  const initialValue = initialTransactionResult.success ? initialTransactionResult.data : null;
 
   const [transaction] = createResource(
     () => ({
@@ -19,9 +22,10 @@ export const DetailedTransaction: Component<DetailedTransactionProps> = (props) 
       transactionId: parseInt(params.transactionId),
     }),
     fetchTransaction,
+    { initialValue },
   );
 
-  const generalAccordionControls = useAccordion(false);
+  const generalAccordionControls = useAccordion();
   const receiptAccordionControls = useAccordion(false);
 
   const [receiptCardRef, setReceiptCardRef] = createSignal<HTMLDivElement>();
@@ -31,14 +35,6 @@ export const DetailedTransaction: Component<DetailedTransactionProps> = (props) 
     for (const entry of entries) {
       setReceiptWidth(entry.contentRect.width);
     }
-  });
-
-  onMount(() => {
-    const timeout = setTimeout(() => {
-      generalAccordionControls.setIsOpened(true);
-      setPageLoaded(true);
-    }, 250);
-    return () => clearTimeout(timeout);
   });
 
   createEffect(() => {
@@ -52,10 +48,8 @@ export const DetailedTransaction: Component<DetailedTransactionProps> = (props) 
   });
 
   createEffect(() => {
-    if (pageLoaded()) {
-      if (!generalAccordionControls.isOpened()) {
-        receiptAccordionControls.setIsOpened(true);
-      }
+    if (!generalAccordionControls.isOpened()) {
+      receiptAccordionControls.setIsOpened(true);
     }
   });
 
@@ -95,7 +89,8 @@ export const DetailedTransaction: Component<DetailedTransactionProps> = (props) 
   };
 
   return (
-    <Suspense
+    <OptionalSuspense
+      disableSuspense={initialValue !== null}
       fallback={
         <Card title={<Skeleton type="line" />}>
           <Skeleton type="line" />
@@ -157,6 +152,6 @@ export const DetailedTransaction: Component<DetailedTransactionProps> = (props) 
           Retour au tableau de bord
         </A>
       </Show>
-    </Suspense>
+    </OptionalSuspense>
   );
 };

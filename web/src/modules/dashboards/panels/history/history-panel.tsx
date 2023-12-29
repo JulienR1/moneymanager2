@@ -38,16 +38,13 @@ export const HistoryPanel: Component<HistoryPanelProps> = (props) => {
                   index={index}
                   anchor={{
                     href: `${currentLocation}/transactions/${transaction.id}`,
+                    state: transaction,
                   }}
                 >
                   <p>{dateFormatter.format(transaction.timestamp)}</p>
                   <p>{transaction.label}</p>
                   <p>{moneyFormatter.format(transaction.amount)}</p>
-                  <Icon
-                    size="base"
-                    name={transaction.category.icon}
-                    style={{ color: transaction.category.color }}
-                  />
+                  <Icon size="base" name={transaction.category.icon} style={{ color: transaction.category.color }} />
                 </TableRow>
               )}
             </For>
