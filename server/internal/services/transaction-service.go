@@ -41,34 +41,56 @@ func (service *TransactionService) FetchTransactions(dashboardId int) ([]dtos.Tr
 
 	result := make([]dtos.TransactionDto, len(transactions))
 	for index, transaction := range transactions {
-		user, err := service.userService.FindUserById(transaction.UserId)
+		dto, err := service.parseTransaction(&transaction)
 		if err != nil {
-			return []dtos.TransactionDto{}, fmt.Errorf("could not find user (id = %d) associated with transaction (id = %d)", transaction.UserId, transaction.Id)
+			return []dtos.TransactionDto{}, err
 		}
-
-		category, err := service.categoryService.GetAssociatedWithDashboardById(dashboardId, transaction.CategoryId)
-		if err != nil {
-			return []dtos.TransactionDto{}, fmt.Errorf("could not find category (id = %d) associated with transaction (id = %d)", transaction.CategoryId, transaction.Id)
-		}
-
-		var receipt *dtos.FileDto = nil
-		if transaction.ReceiptId != nil {
-			receipt, err = service.fileService.FetchFile(*transaction.ReceiptId)
-			if err != nil {
-				return []dtos.TransactionDto{}, fmt.Errorf("could not find receipt (id = %d) associated with transaction (id = %d)", *transaction.ReceiptId, transaction.Id)
-			}
-		}
-
-		result[index] = dtos.TransactionDto{
-			Id:        transaction.Id,
-			Label:     transaction.Label,
-			Amount:    transaction.Amount,
-			User:      user,
-			Receipt:   receipt,
-			Category:  category,
-			Timestamp: transaction.Date,
-		}
+		result[index] = *dto
 	}
 
 	return result, nil
+}
+
+func (service *TransactionService) FetchTransaction(dashboardId, transactionId int) (*dtos.TransactionDto, error) {
+	transaction, err := service.repository.FetchTransaction(dashboardId, transactionId)
+	if err != nil {
+		return nil, fmt.Errorf("could not get transaction (id = %d) for dashboard (id = %d)", transactionId, dashboardId)
+	}
+
+	dto, err := service.parseTransaction(transaction)
+	if err != nil {
+		return nil, err
+	}
+
+	return dto, nil
+}
+
+func (service *TransactionService) parseTransaction(transaction *repositories.TransactionRecord) (*dtos.TransactionDto, error) {
+	user, err := service.userService.FindUserById(transaction.UserId)
+	if err != nil {
+		return nil, fmt.Errorf("could not find user (id = %d) associated with transaction (id = %d)", transaction.UserId, transaction.Id)
+	}
+
+	category, err := service.categoryService.GetAssociatedWithDashboardById(transaction.DashboardId, transaction.CategoryId)
+	if err != nil {
+		return nil, fmt.Errorf("could not find category (id = %d) associated with transaction (id = %d)", transaction.CategoryId, transaction.Id)
+	}
+
+	var receipt *dtos.FileDto = nil
+	if transaction.ReceiptId != nil {
+		receipt, err = service.fileService.FetchFile(*transaction.ReceiptId)
+		if err != nil {
+			return nil, fmt.Errorf("could not find receipt (id = %d) associated with transaction (id = %d)", *transaction.ReceiptId, transaction.Id)
+		}
+	}
+
+	return &dtos.TransactionDto{
+		Id:        transaction.Id,
+		Label:     transaction.Label,
+		Amount:    transaction.Amount,
+		User:      user,
+		Receipt:   receipt,
+		Category:  category,
+		Timestamp: transaction.Date,
+	}, nil
 }

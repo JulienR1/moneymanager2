@@ -55,3 +55,23 @@ func (repository *TransactionRepository) FetchTransactions(dashboardId int) ([]T
 
 	return result, nil
 }
+
+func (repository *TransactionRepository) FetchTransaction(dashboardId, transactionId int) (*TransactionRecord, error) {
+	query := "SELECT id, label, amount, date, receipt_id, user_id, category_id, dashboard_id FROM transactions WHERE dashboard_id = $1 AND id = $2"
+
+	var result TransactionRecord
+	if err := repository.db.Connection.QueryRow(query, dashboardId, transactionId).Scan(
+		&result.Id,
+		&result.Label,
+		&result.Amount,
+		&result.Date,
+		&result.ReceiptId,
+		&result.UserId,
+		&result.CategoryId,
+		&result.DashboardId,
+	); err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}

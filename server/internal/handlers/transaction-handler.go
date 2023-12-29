@@ -112,6 +112,25 @@ func (handler *TransactionHandler) GetTransactions(c *fiber.Ctx) error {
 }
 
 func (handler *TransactionHandler) GetTransaction(c *fiber.Ctx) error {
+	dashboardIdStr := c.Params("dashboardId")
+	dashboardId, err := strconv.Atoi(dashboardIdStr)
+	if err != nil {
+		return c.SendStatus(http.StatusBadRequest)
+	}
+
+	transactionIdStr := c.Params("transactionId")
+	transactionId, err := strconv.Atoi(transactionIdStr)
+	if err != nil {
+		return c.SendStatus(http.StatusBadRequest)
+	}
+
+	transactions, err := handler.service.FetchTransaction(dashboardId, transactionId)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(jsonutils.NewError(err))
+	}
+
+	return c.Status(http.StatusOK).JSON(transactions)
+
 	// TODO
 	return nil
 }
