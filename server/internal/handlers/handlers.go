@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"JulienR1/moneymanager2/server/internal/middlewares"
 	jsonutils "JulienR1/moneymanager2/server/internal/pkg/json-utils"
 	repoutils "JulienR1/moneymanager2/server/internal/pkg/repo-utils"
 	"JulienR1/moneymanager2/server/internal/repositories"
@@ -41,6 +42,7 @@ func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
 	transactionHandler := MakeTransactionHandler(validator, &transactionService, &fileService, &categoryService, &dashboardService)
 
 	authMiddleware := makeAuthMiddleware(&authHandler, &userHandler)
+	dashboardMiddleware := middlewares.MakeDashboardMiddleware(&dashboardService)
 
 	app.Static("/", "./public")
 
@@ -59,7 +61,9 @@ func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
 	api.Use(authMiddleware).Get("/dashboards", dashboardHandler.GetAllDashboardsForUser)
 	api.Use(authMiddleware).Get("/dashboards/:dashboardId", dashboardHandler.GetDashboardForUser)
 
-	dashboardGroup := api.Group("/dashboards/:dashboardId").Use(authMiddleware)
+	dashboardGroup := api.Group("/dashboards/:dashboardId").
+		Use(authMiddleware).
+		Use(dashboardMiddleware)
 	dashboardGroup.Get("/users", dashboardHandler.GetUsers)
 	dashboardGroup.Post("/categories", categoryHandler.CreateCategory)
 	dashboardGroup.Get("/transactions", transactionHandler.GetTransactions)

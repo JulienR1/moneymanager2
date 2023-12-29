@@ -4,7 +4,6 @@ import (
 	jsonutils "JulienR1/moneymanager2/server/internal/pkg/json-utils"
 	"JulienR1/moneymanager2/server/internal/services"
 	"net/http"
-	"strconv"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -28,12 +27,7 @@ func MakeCategoryHandler(v *validator.Validate, s *services.CategoryService, das
 
 func (handler *CategoryHandler) CreateCategory(c *fiber.Ctx) error {
 	input := NewCategoryRequest{}
-
-	dashboardIdStr := c.Params("dashboardId")
-	dashboardId, err := strconv.Atoi(dashboardIdStr)
-	if err != nil {
-		return c.SendStatus(http.StatusBadRequest)
-	}
+	dashboardId := c.Locals("dashboardId").(int)
 
 	if err := c.BodyParser(&input); err != nil {
 		return c.SendStatus(http.StatusBadRequest)
@@ -41,10 +35,6 @@ func (handler *CategoryHandler) CreateCategory(c *fiber.Ctx) error {
 
 	if err := handler.validate.Struct(input); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(jsonutils.NewError(err))
-	}
-
-	if _, err := handler.dashboardService.GetById(dashboardId); err != nil {
-		return c.SendStatus(http.StatusBadRequest)
 	}
 
 	newCategory, err := handler.service.AddCategory(dashboardId, input.Label, input.Color, input.IconName)
