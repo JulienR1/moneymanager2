@@ -7,11 +7,11 @@ type NewTransactionDto struct {
 }
 
 type TransactionDto struct {
-	Id        int          `json:"id"`
-	Label     string       `json:"label"`
-	Amount    float64      `json:"amount"`
-	User      *UserDto     `json:"user"`
-	Category  *CategoryDto `json:"category"`
-	Receipt   *FileDto     `json:"receipt"`
-	Timestamp time.Time    `json:"timestamp"`
+	Id        int         `json:"id"`
+	Label     string      `json:"label"`
+	Amount    float64     `json:"amount"`
+	User      UserDto     `json:"user"`
+	Category  CategoryDto `json:"category"`
+	Receipt   *FileDto    `json:"receipt"`
+	Timestamp time.Time   `json:"timestamp"`
 }

@@ -87,7 +87,7 @@ func (handler *TransactionHandler) CreateRefund(c *fiber.Ctx) error {
 
 func (handler *TransactionHandler) GetTransactions(c *fiber.Ctx) error {
 	dashboardId := c.Locals("dashboardId").(int)
-	transactions, err := handler.service.FetchTransactions(dashboardId)
+	transactions, err := handler.service.GetTransactions(dashboardId)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(jsonutils.NewError(err))
 	}
@@ -104,7 +104,7 @@ func (handler *TransactionHandler) GetTransaction(c *fiber.Ctx) error {
 		return c.SendStatus(http.StatusBadRequest)
 	}
 
-	transaction, err := handler.service.FetchTransaction(dashboardId, transactionId)
+	transaction, err := handler.service.GetTransaction(dashboardId, transactionId)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(jsonutils.NewError(err))
 	}

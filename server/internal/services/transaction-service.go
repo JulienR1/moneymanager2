@@ -33,8 +33,8 @@ func (service *TransactionService) SaveTransaction(isExpense bool, label string,
 	return &dtos.NewTransactionDto{Id: transactiondId}, nil
 }
 
-func (service *TransactionService) FetchTransactions(dashboardId int) ([]dtos.TransactionDto, error) {
-	transactions, err := service.repository.FetchTransactions(dashboardId)
+func (service *TransactionService) GetTransactions(dashboardId int) ([]dtos.TransactionDto, error) {
+	transactions, err := service.repository.FindTransactions(dashboardId)
 	if err != nil {
 		return []dtos.TransactionDto{}, fmt.Errorf("could not get transactions for dashboard (id = %d)", dashboardId)
 	}
@@ -51,18 +51,12 @@ func (service *TransactionService) FetchTransactions(dashboardId int) ([]dtos.Tr
 	return result, nil
 }
 
-func (service *TransactionService) FetchTransaction(dashboardId, transactionId int) (*dtos.TransactionDto, error) {
-	transaction, err := service.repository.FetchTransaction(dashboardId, transactionId)
+func (service *TransactionService) GetTransaction(dashboardId, transactionId int) (*dtos.TransactionDto, error) {
+	transaction, err := service.repository.FindTransaction(dashboardId, transactionId)
 	if err != nil {
 		return nil, fmt.Errorf("could not get transaction (id = %d) for dashboard (id = %d)", transactionId, dashboardId)
 	}
-
-	dto, err := service.parseTransaction(transaction)
-	if err != nil {
-		return nil, err
-	}
-
-	return dto, nil
+	return service.parseTransaction(transaction)
 }
 
 func (service *TransactionService) parseTransaction(transaction *repositories.TransactionRecord) (*dtos.TransactionDto, error) {
@@ -78,7 +72,7 @@ func (service *TransactionService) parseTransaction(transaction *repositories.Tr
 
 	var receipt *dtos.FileDto = nil
 	if transaction.ReceiptId != nil {
-		receipt, err = service.fileService.FetchFile(*transaction.ReceiptId)
+		receipt, err = service.fileService.GetFile(*transaction.ReceiptId)
 		if err != nil {
 			return nil, fmt.Errorf("could not find receipt (id = %d) associated with transaction (id = %d)", *transaction.ReceiptId, transaction.Id)
 		}
@@ -88,9 +82,9 @@ func (service *TransactionService) parseTransaction(transaction *repositories.Tr
 		Id:        transaction.Id,
 		Label:     transaction.Label,
 		Amount:    transaction.Amount,
-		User:      user,
+		User:      *user,
 		Receipt:   receipt,
-		Category:  category,
+		Category:  *category,
 		Timestamp: transaction.Date,
 	}, nil
 }

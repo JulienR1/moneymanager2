@@ -2,6 +2,7 @@ package repositories
 
 import (
 	repoutils "JulienR1/moneymanager2/server/internal/pkg/repo-utils"
+	"database/sql"
 	"time"
 )
 
@@ -36,7 +37,7 @@ func (repository *TransactionRepository) CreateTransaction(label string, amount 
 	return transactionId, nil
 }
 
-func (repository *TransactionRepository) FetchTransactions(dashboardId int) ([]TransactionRecord, error) {
+func (repository *TransactionRepository) FindTransactions(dashboardId int) ([]TransactionRecord, error) {
 	query := "SELECT id, label, amount, date, receipt_id, user_id, category_id, dashboard_id FROM transactions WHERE dashboard_id = $1"
 
 	rows, err := repository.db.Connection.Query(query, dashboardId)
@@ -49,29 +50,38 @@ func (repository *TransactionRepository) FetchTransactions(dashboardId int) ([]T
 
 	for rows.Next() {
 		record := TransactionRecord{}
-		rows.Scan(&record.Id, &record.Label, &record.Amount, &record.Date, &record.ReceiptId, &record.UserId, &record.CategoryId, &record.DashboardId)
+		scanTransaction(rows, &record)
 		result = append(result, record)
 	}
 
 	return result, nil
 }
 
-func (repository *TransactionRepository) FetchTransaction(dashboardId, transactionId int) (*TransactionRecord, error) {
+func (repository *TransactionRepository) FindTransaction(dashboardId, transactionId int) (*TransactionRecord, error) {
 	query := "SELECT id, label, amount, date, receipt_id, user_id, category_id, dashboard_id FROM transactions WHERE dashboard_id = $1 AND id = $2"
 
 	var result TransactionRecord
-	if err := repository.db.Connection.QueryRow(query, dashboardId, transactionId).Scan(
-		&result.Id,
-		&result.Label,
-		&result.Amount,
-		&result.Date,
-		&result.ReceiptId,
-		&result.UserId,
-		&result.CategoryId,
-		&result.DashboardId,
-	); err != nil {
+	row := repository.db.Connection.QueryRow(query, dashboardId, transactionId)
+	if err := scanTransaction(row, &result); err != nil {
 		return nil, err
 	}
 
 	return &result, nil
+}
+
+type row interface {
+	Scan(dest ...any) error
+}
+
+func scanTransaction(row row, record *TransactionRecord) error {
+	return row.Scan(
+		&record.Id,
+		&record.Label,
+		&record.Amount,
+		&record.Date,
+		&record.ReceiptId,
+		&record.UserId,
+		&record.CategoryId,
+		&record.DashboardId,
+	)
 }

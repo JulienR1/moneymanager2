@@ -56,7 +56,7 @@ func (service *FileService) StoreFile(uri *datauri.DataURI) (int, error) {
 	return id, nil
 }
 
-func (service *FileService) FetchFile(fileId int) (*dtos.FileDto, error) {
+func (service *FileService) GetFile(fileId int) (*dtos.FileDto, error) {
 	file, err := service.repository.FindFileById(fileId)
 	if err != nil {
 		return nil, fmt.Errorf("could not find file (id = %d)", fileId)
