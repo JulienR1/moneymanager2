@@ -1,17 +1,14 @@
 package handlers
 
 import (
-	jsonutils "JulienR1/moneymanager2/server/internal/pkg/json-utils"
+	"JulienR1/moneymanager2/server/internal/middlewares"
 	repoutils "JulienR1/moneymanager2/server/internal/pkg/repo-utils"
 	"JulienR1/moneymanager2/server/internal/repositories"
 	"JulienR1/moneymanager2/server/internal/services"
 	"JulienR1/moneymanager2/server/internal/validators"
-	"errors"
-	"net/http"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/keyauth"
 )
 
 func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
@@ -32,7 +29,7 @@ func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
 	userService := services.MakeUserService(&userRepository, &dashboardRepository, db)
 	categoryService := services.MakeCategoryService(&categoryRepository, &iconRepository)
 	dashboardService := services.MakeDashboardService(&dashboardRepository, &categoryService, &userService)
-	transactionService := services.MakeTransactionService(&transactionRepository)
+	transactionService := services.MakeTransactionService(&transactionRepository, &userService, &fileService, &categoryService)
 
 	userHandler := MakeUserHandler(validator, &userService)
 	categoryHandler := MakeCategoryHandler(validator, &categoryService, &dashboardService)
@@ -40,7 +37,8 @@ func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
 	dashboardHandler := MakeDashboardHandler(validator, &dashboardService, &userService)
 	transactionHandler := MakeTransactionHandler(validator, &transactionService, &fileService, &categoryService, &dashboardService)
 
-	authMiddleware := makeAuthMiddleware(&authHandler, &userHandler)
+	authMiddleware := middlewares.MakeAuthMiddleware(&authService, &userService)
+	dashboardMiddleware := middlewares.MakeDashboardMiddleware(&dashboardService)
 
 	app.Static("/", "./public")
 
@@ -59,37 +57,18 @@ func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
 	api.Use(authMiddleware).Get("/dashboards", dashboardHandler.GetAllDashboardsForUser)
 	api.Use(authMiddleware).Get("/dashboards/:dashboardId", dashboardHandler.GetDashboardForUser)
 
-	dashboardGroup := api.Group("/dashboards/:dashboardId").Use(authMiddleware)
+	dashboardGroup := api.Group("/dashboards/:dashboardId").
+		Use(authMiddleware).
+		Use(dashboardMiddleware)
 	dashboardGroup.Get("/users", dashboardHandler.GetUsers)
 	dashboardGroup.Post("/categories", categoryHandler.CreateCategory)
+	dashboardGroup.Get("/transactions", transactionHandler.GetTransactions)
 	dashboardGroup.Post("/transactions", transactionHandler.CreateTransaction)
+	dashboardGroup.Get("/transactions/:transactionId", transactionHandler.GetTransaction)
 
 	app.Static("/*", "./public/index.html")
 }
 
 func rootHandler(c *fiber.Ctx) error {
 	return c.SendString("Server is running")
-}
-
-func makeAuthMiddleware(authHandler *AuthHandler, userHandler *UserHandler) func(*fiber.Ctx) error {
-	validateAuth := func(c *fiber.Ctx, key string) (bool, error) {
-		userId, err := authHandler.service.Authenticate(key[7:]) // [7:] --> Remove "Bearer "
-
-		if err != nil {
-			return false, keyauth.ErrMissingOrMalformedAPIKey
-		}
-
-		user, err := userHandler.service.FindUserById(userId)
-		if user == nil || err != nil {
-			return false, c.Status(http.StatusBadRequest).JSON(jsonutils.NewError(errors.New("invalid user")))
-		}
-
-		c.Locals("userId", userId)
-		return true, nil
-	}
-
-	return keyauth.New(keyauth.Config{
-		KeyLookup: "header:Authorization",
-		Validator: validateAuth,
-	})
 }

@@ -1,0 +1,2 @@
+ALTER TABLE remote_files
+ADD COLUMN mime VARCHAR(64);

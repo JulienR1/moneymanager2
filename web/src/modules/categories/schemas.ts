@@ -8,6 +8,7 @@ export const Color = z
   );
 
 export const CategorySchema = z.object({
+  id: z.number(),
   label: z
     .string({ invalid_type_error: "Format invalide" })
     .min(1, "Saisir un nom"),

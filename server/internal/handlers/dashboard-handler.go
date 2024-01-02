@@ -4,7 +4,6 @@ import (
 	jsonutils "JulienR1/moneymanager2/server/internal/pkg/json-utils"
 	"JulienR1/moneymanager2/server/internal/services"
 	"net/http"
-	"strconv"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -21,17 +20,7 @@ func MakeDashboardHandler(v *validator.Validate, s *services.DashboardService, u
 }
 
 func (handler *DashboardHandler) GetUsers(c *fiber.Ctx) error {
-	dashboardIdStr := c.Params("dashboardId")
-	dashboardId, err := strconv.Atoi(dashboardIdStr)
-	if err != nil {
-		return c.SendStatus(http.StatusBadRequest)
-	}
-
-	userId := c.Locals("userId").(int)
-	if !handler.service.IsDashboardAssociatedWithUser(dashboardId, userId) {
-		return c.SendStatus(http.StatusUnauthorized)
-	}
-
+	dashboardId := c.Locals("dashboardId").(int)
 	users, err := handler.service.GetAssociatedUsers(dashboardId)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(jsonutils.NewError(err))
@@ -51,12 +40,7 @@ func (handler *DashboardHandler) GetAllDashboardsForUser(c *fiber.Ctx) error {
 }
 
 func (handler *DashboardHandler) GetDashboardForUser(c *fiber.Ctx) error {
-	dashboardIdStr := c.Params("dashboardId")
-	dashboardId, err := strconv.Atoi(dashboardIdStr)
-	if err != nil {
-		return c.SendStatus(http.StatusBadRequest)
-	}
-
+	dashboardId := c.Locals("dashboardId").(int)
 	dashboard, err := handler.service.GetById(dashboardId)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(jsonutils.NewError(err))

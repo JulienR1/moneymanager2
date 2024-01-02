@@ -6,3 +6,4 @@
 20230917_categories_from_dashboards.sql
 20231029_0_files_table.sql
 20231029_1_nullable_receipts.sql
+20231228_mime_types.sql

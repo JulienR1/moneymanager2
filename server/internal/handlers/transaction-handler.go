@@ -36,6 +36,8 @@ func MakeTransactionHandler(v *validator.Validate, s *services.TransactionServic
 
 func (handler *TransactionHandler) CreateTransaction(c *fiber.Ctx) error {
 	input := NewTransactionRequest{}
+	dashboardId := c.Locals("userId").(int)
+	userId := c.Locals("dashboardId").(int)
 
 	if err := c.BodyParser(&input); err != nil {
 		return c.SendStatus(http.StatusBadRequest)
@@ -51,21 +53,8 @@ func (handler *TransactionHandler) CreateTransaction(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(jsonutils.NewError(errors.New("invalid transaction type")))
 	}
 
-	dashboardIdStr := c.Params("dashboardId")
-	dashboardId, err := strconv.Atoi(dashboardIdStr)
-	if err != nil {
-		return c.SendStatus(http.StatusBadRequest)
-	}
-
-	if handler.categoryService.GetAssociatedWithDashboardById(dashboardId, input.CategoryId); err != nil {
+	if _, err := handler.categoryService.GetAssociatedWithDashboardById(dashboardId, input.CategoryId); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(jsonutils.NewError(err))
-	}
-
-	userId := c.Locals("userId").(int)
-	if !handler.dashboardService.IsDashboardAssociatedWithUser(dashboardId, userId) {
-		return c.
-			Status(http.StatusBadRequest).
-			JSON(jsonutils.NewError(errors.New("invalid dashboard")))
 	}
 
 	var receiptId *int = nil
@@ -94,4 +83,31 @@ func (handler *TransactionHandler) CreateTransaction(c *fiber.Ctx) error {
 
 func (handler *TransactionHandler) CreateRefund(c *fiber.Ctx) error {
 	return c.SendStatus(http.StatusNotImplemented)
+}
+
+func (handler *TransactionHandler) GetTransactions(c *fiber.Ctx) error {
+	dashboardId := c.Locals("dashboardId").(int)
+	transactions, err := handler.service.GetTransactions(dashboardId)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(jsonutils.NewError(err))
+	}
+
+	return c.Status(http.StatusOK).JSON(transactions)
+}
+
+func (handler *TransactionHandler) GetTransaction(c *fiber.Ctx) error {
+	dashboardId := c.Locals("dashboardId").(int)
+
+	transactionIdStr := c.Params("transactionId")
+	transactionId, err := strconv.Atoi(transactionIdStr)
+	if err != nil {
+		return c.SendStatus(http.StatusBadRequest)
+	}
+
+	transaction, err := handler.service.GetTransaction(dashboardId, transactionId)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(jsonutils.NewError(err))
+	}
+
+	return c.Status(http.StatusOK).JSON(transaction)
 }
