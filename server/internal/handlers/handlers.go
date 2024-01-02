@@ -25,12 +25,14 @@ func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
 	tokenService := services.MakeTokenService()
 	cookieService := services.MakeCookieService()
 	fileService := services.MakeFileService(&fileRepository)
+	iconService := services.MakeIconService(&iconRepository)
 	authService := services.MakeAuthService(&tokenService, &userRepository)
 	userService := services.MakeUserService(&userRepository, &dashboardRepository, db)
 	categoryService := services.MakeCategoryService(&categoryRepository, &iconRepository)
 	dashboardService := services.MakeDashboardService(&dashboardRepository, &categoryService, &userService)
 	transactionService := services.MakeTransactionService(&transactionRepository, &userService, &fileService, &categoryService)
 
+	iconHandler := MakeIconHandler(&iconService)
 	userHandler := MakeUserHandler(validator, &userService)
 	categoryHandler := MakeCategoryHandler(validator, &categoryService, &dashboardService)
 	authHandler := MakeAuthHandler(validator, &authService, &tokenService, &cookieService)
@@ -53,6 +55,8 @@ func RegisterRoutes(app *fiber.App, db *repoutils.Database) {
 	api.Post("/register", userHandler.Register)
 	users := api.Group("/users").Use(authMiddleware)
 	users.Get("/:userId", userHandler.GetUser)
+
+	api.Get("/icons", iconHandler.GetIcons)
 
 	api.Use(authMiddleware).Get("/dashboards", dashboardHandler.GetAllDashboardsForUser)
 	api.Use(authMiddleware).Get("/dashboards/:dashboardId", dashboardHandler.GetDashboardForUser)

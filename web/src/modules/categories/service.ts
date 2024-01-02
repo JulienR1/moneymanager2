@@ -1,5 +1,6 @@
 import { request } from "@modules/fetch";
 import { cookToast } from "@modules/toasts";
+import { z } from "zod";
 import { CategorySchema, NewCategorySchema } from "./schemas";
 
 export async function createCategory(
@@ -25,4 +26,14 @@ export async function createCategory(
 
   refreshDashboard();
   onSuccess();
+}
+
+export async function findAvailableIcons(): Promise<string[]> {
+  const result = await request(`/icons`).get(z.array(z.string()));
+  if (!result.success) {
+    cookToast("Erreur", { description: "Impossible de charger les icônes" }).burnt();
+    return [];
+  }
+
+  return result.data;
 }
