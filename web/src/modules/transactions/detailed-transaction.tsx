@@ -53,6 +53,13 @@ export const DetailedTransaction: Component<DetailedTransactionProps> = (props) 
     }
   });
 
+  createEffect(() => {
+    const t = transaction();
+    if (t && t.receipt == null) {
+      receiptAccordionControls.setIsOpened(true);
+    }
+  });
+
   const dashboardLocation = location.pathname.replace(/transactions\/\d+/, "").replace(/\/$/, "");
 
   const transactionDetails = () => {
@@ -116,10 +123,7 @@ export const DetailedTransaction: Component<DetailedTransactionProps> = (props) 
             when={transaction()!.receipt}
             fallback={<NoContent message="Aucun reçu n'est associé à cette transaction" />}
           >
-            <div
-              class="relative mx-auto block max-w-[430px] overflow-hidden md:bg-red-500 lg:max-w-[800px]"
-              ref={setReceiptCardRef}
-            >
+            <div class="relative mx-auto block max-w-[430px] overflow-hidden lg:max-w-[800px]" ref={setReceiptCardRef}>
               <A href={transaction()!.receipt!.url!} target="_blank">
                 <Show
                   when={transaction()!.receipt!.mime === "application/pdf"}
