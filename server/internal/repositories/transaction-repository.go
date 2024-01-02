@@ -2,7 +2,6 @@ package repositories
 
 import (
 	repoutils "JulienR1/moneymanager2/server/internal/pkg/repo-utils"
-	"database/sql"
 	"time"
 )
 
