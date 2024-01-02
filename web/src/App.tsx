@@ -55,7 +55,7 @@ const Navigation: Component<{ connected: Accessor<boolean> }> = (props) => {
               <Route path="/new/*" component={NewTransaction} />
               <Route path="/transactions/:transactionId" component={DetailedTransaction} />
               <Route path="/categories/:categoryId" component={() => <NoContent message="TODO" />} />
-              <Route path="/teammates/:teammateId" component={() => <NoContent message="TODO" />} />
+              <Route path="/profiles/:profileId" component={() => <NoContent message="TODO" />} />
             </Route>
           </Match>
         </Switch>
