@@ -1,4 +1,4 @@
-import { Button, ColorInput, Form, Input } from "@modules/form";
+import { Button, ColorInput, Form, Input, Select } from "@modules/form";
 import { A, useNavigate } from "@solidjs/router";
 import { Skeleton } from "@ui";
 import { Component, For, Suspense, createResource } from "solid-js";
@@ -27,22 +27,9 @@ export const NewCategoryForm: Component<NewCategoryFormProps> = (props) => {
       <Input id="label" name="label" label="Nom" placeholder="Saisir un nom" leftIcon={{ name: "label" }} />
       <ColorInput id="color" name="color" label="Couleur" placeholder="Saisir une couleur (HEX)" />
       <Suspense fallback={<Skeleton type="line" />}>
-        <select id="icon" name="icon">
-          <option value="">Saisir un icône</option>
+        <Select id="icon" name="icon" label="Icône" placeholder="Saisir un icône" leftIcon={{ name: "image" }}>
           <For each={icons()}>{(icon) => <option value={icon}>{icon}</option>}</For>
-        </select>
-        {
-          // <Input
-          //   id="icon"
-          //   name="icon"
-          //   label="Icône"
-          //   placeholder="Saisir un icône"
-          //   leftIcon={{ name: "image" }}
-          //   type="select"
-          // >
-          //   <option value="1">opt 1</option>
-          // </Input>
-        }
+        </Select>
       </Suspense>
 
       <div class="mt-2 flex items-center justify-between">
